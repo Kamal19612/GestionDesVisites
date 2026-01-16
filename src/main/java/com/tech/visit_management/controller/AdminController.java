@@ -16,7 +16,7 @@ import com.tech.visit_management.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
 public class AdminController {
 

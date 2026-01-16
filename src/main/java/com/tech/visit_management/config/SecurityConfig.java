@@ -41,12 +41,12 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/secretaire/**").hasRole("SECRETAIRE")
-                .requestMatchers("/agent/**").hasRole("AGENT")
-                .requestMatchers("/employe/**").hasRole("EMPLOYE")
-                .requestMatchers("/visiteur/**").hasRole("VISITEUR")
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/v1/secretaire/**").hasRole("SECRETAIRE")
+                .requestMatchers("/api/v1/agent/**").hasRole("AGENT")
+                .requestMatchers("/api/v1/employe/**").hasRole("EMPLOYE")
+                .requestMatchers("/api/v1/visiteur/**").hasRole("VISITEUR")
                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))

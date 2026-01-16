@@ -1,0 +1,223 @@
+import React, { useState } from 'react';
+import { Link, Outlet, useLocation } from 'react-router-dom';
+import AppHeader from '../components/layout/AppHeader';
+import AppFooter from '../components/layout/AppFooter';
+import { useAuth } from '../hooks/useAuth';
+
+export default function MainLayout({ children }) {
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
+
+  // Determine home route based on user role
+  const getHomeRoute = () => {
+    if (!user) return '/';
+    const role = typeof user.role === 'string' ? user.role : user.role?.name;
+    switch (role) {
+      case 'VISITEUR':
+        return '/visitor/dashboard';
+      case 'SECRETAIRE':
+        return '/secretary/dashboard';
+      case 'AGENT_SECURITE':
+        return '/agent/dashboard';
+      case 'EMPLOYEUR':
+        return '/employee/dashboard';
+      case 'ADMIN':
+        return '/admin/dashboard';
+      default:
+        return '/';
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      <AppHeader />
+      {/* Dynamic Background Element */}
+      <div className="fixed top-0 left-0 w-full h-96 bg-gradient-to-b from-vp-navy/5 to-transparent pointer-events-none"></div>
+
+      <div className="flex flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4">
+        {/* Sidebar (Premium Design) */}
+        <aside className="hidden md:flex flex-col w-64 mr-6">
+          <div className="sticky top-6 space-y-6">
+            {/* User Profile Card */}
+            <div className="card p-5 border-none shadow-xl shadow-slate-200/50 bg-white/80 backdrop-blur-xl relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-24 h-24 bg-vp-cyan/5 blur-2xl -mr-12 -mt-12 group-hover:bg-vp-cyan/10 transition-colors"></div>
+               {user ? (
+                 <div className="flex items-center gap-4 relative z-10">
+                   <div className="w-14 h-14 bg-gradient-to-tr from-vp-navy to-slate-700 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-vp-navy/20 uppercase">
+                     {(user.firstName || user.email || '?')[0]}
+                   </div>
+                   <div>
+                     <p className="font-black text-vp-navy text-base leading-tight">{user?.firstName || user?.email?.split('@')[0]}</p>
+                     <p className="text-[10px] font-black uppercase tracking-widest text-vp-cyan mt-1">{user?.role?.replace('_', ' ')}</p>
+                   </div>
+                 </div>
+               ) : (
+                 <div className="text-center py-2">
+                   <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Portail Visiteur</p>
+                   <Link to="/auth/login" className="btn-primary w-full py-3 inline-block">Se connecter</Link>
+                 </div>
+               )}
+            </div>
+
+            {/* Navigation Menu */}
+            <nav className="space-y-4">
+               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 ml-4 mb-2">Navigation Principale</p>
+               <ul className="space-y-2">
+                 {/* Shared Dashboard Link for all roles (dynamic destination) */}
+                 <li>
+                    <Link 
+                      to={getHomeRoute()} 
+                      className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                        useLocation().pathname.includes('dashboard') 
+                        ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                        : 'hover:bg-white hover:shadow-lg text-slate-500'
+                      }`}
+                    >
+                      <span className={`text-xl ${useLocation().pathname.includes('dashboard') ? 'scale-110' : 'group-hover:scale-110'}`}>📊</span>
+                      <div className="flex flex-col">
+                        <span className={`text-sm font-black ${useLocation().pathname.includes('dashboard') ? 'text-white' : 'text-vp-navy'}`}>Dashboard</span>
+                        <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('dashboard') ? 'text-white/40' : 'text-slate-400'}`}>Vue d'ensemble</span>
+                      </div>
+                    </Link>
+                 </li>
+
+                 {user && user.role === 'VISITEUR' && (
+                   <li>
+                     <Link 
+                       to="/visitor/appointments/new" 
+                       className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                         useLocation().pathname.includes('/appointments/new') 
+                         ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                         : 'hover:bg-white hover:shadow-lg text-slate-500'
+                       }`}
+                     >
+                       <span className="text-xl">➕</span>
+                       <div className="flex flex-col">
+                         <span className={`text-sm font-black ${useLocation().pathname.includes('/appointments/new') ? 'text-white' : 'text-vp-navy'}`}>Planifier</span>
+                         <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/appointments/new') ? 'text-white/40' : 'text-slate-400'}`}>Nouveau RDV</span>
+                       </div>
+                     </Link>
+                   </li>
+                 )}
+                 
+                 {user && user.role === 'SECRETAIRE' && (
+                   <li>
+                     <Link 
+                       to="/secretary/appointments" 
+                       className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                         useLocation().pathname.includes('/secretary/appointments') 
+                         ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                         : 'hover:bg-white hover:shadow-lg text-slate-500'
+                       }`}
+                     >
+                       <span className="text-xl">🗓️</span>
+                       <div className="flex flex-col">
+                         <span className={`text-sm font-black ${useLocation().pathname.includes('/secretary/appointments') ? 'text-white' : 'text-vp-navy'}`}>Agenda</span>
+                         <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/secretary/appointments') ? 'text-white/40' : 'text-slate-400'}`}>Modération</span>
+                       </div>
+                     </Link>
+                   </li>
+                 )}
+
+                 {user && user.role === 'AGENT_SECURITE' && (
+                   <>
+                     <li>
+                       <Link 
+                         to="/agent/visit/record" 
+                         className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                           useLocation().pathname.includes('/agent/visit/record') 
+                           ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                           : 'hover:bg-white hover:shadow-lg text-slate-500'
+                         }`}
+                       >
+                         <span className="text-xl">🚪</span>
+                         <div className="flex flex-col">
+                           <span className={`text-sm font-black ${useLocation().pathname.includes('/agent/visit/record') ? 'text-white' : 'text-vp-navy'}`}>Entrées</span>
+                           <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/agent/visit/record') ? 'text-white/40' : 'text-slate-400'}`}>Check-in</span>
+                         </div>
+                       </Link>
+                     </li>
+                     <li>
+                       <Link 
+                         to="/agent/current-visitors" 
+                         className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                           useLocation().pathname.includes('/agent/current-visitors') 
+                           ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                           : 'hover:bg-white hover:shadow-lg text-slate-500'
+                         }`}
+                       >
+                         <span className="text-xl relative">
+                           👥
+                           <span className="absolute -top-1 -right-1 w-2 h-2 bg-vp-mint rounded-full animate-ping"></span>
+                         </span>
+                         <div className="flex flex-col">
+                           <span className={`text-sm font-black ${useLocation().pathname.includes('/agent/current-visitors') ? 'text-white' : 'text-vp-navy'}`}>Présents</span>
+                           <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/agent/current-visitors') ? 'text-white/40' : 'text-slate-400'}`}>Sur site</span>
+                         </div>
+                       </Link>
+                     </li>
+                     <li className="pt-2">
+                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300 ml-4 mb-2">Archives</p>
+                        <Link 
+                          to="/agent/visit/history" 
+                          className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                            useLocation().pathname.includes('/agent/visit/history') 
+                            ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                            : 'hover:bg-white hover:shadow-lg text-slate-500'
+                          }`}
+                        >
+                          <span className="text-xl">📜</span>
+                          <div className="flex flex-col">
+                            <span className={`text-sm font-black ${useLocation().pathname.includes('/agent/visit/history') ? 'text-white' : 'text-vp-navy'}`}>Historique</span>
+                            <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/agent/visit/history') ? 'text-white/40' : 'text-slate-400'}`}>Régistre</span>
+                          </div>
+                        </Link>
+                     </li>
+                   </>
+                 )}
+
+                 {user && user.role === 'ADMIN' && (
+                   <li>
+                     <Link 
+                       to="/admin/dashboard" 
+                       className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                         useLocation().pathname.includes('/admin') 
+                         ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                         : 'hover:bg-white hover:shadow-lg text-slate-500'
+                       }`}
+                     >
+                       <span className="text-xl">⚙️</span>
+                       <div className="flex flex-col">
+                         <span className={`text-sm font-black ${useLocation().pathname.includes('/admin') ? 'text-white' : 'text-vp-navy'}`}>Gestion</span>
+                         <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/admin') ? 'text-white/40' : 'text-slate-400'}`}>Paramètres</span>
+                       </div>
+                     </Link>
+                   </li>
+                 )}
+               </ul>
+            </nav>
+
+            {/* Logout Action */}
+            {user && (
+              <div className="pt-8 border-t border-slate-100">
+                <button 
+                  onClick={logout} 
+                  className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-rose-500 hover:bg-rose-50 transition-all border border-transparent hover:border-rose-100"
+                >
+                  🚪 Déconnexion
+                </button>
+              </div>
+            )}
+          </div>
+        </aside>
+
+        {/* Main content area */}
+        <main className="flex-1">
+          {children || <Outlet />}
+        </main>
+      </div>
+
+      <AppFooter />
+    </div>
+  );
+}

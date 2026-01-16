@@ -1,0 +1,64 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "required": "Required",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "actions": "Actions",
+    "date": "Date",
+    "status": "Status",
+    "reason": "Reason",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "status": {
+    "EN_ATTENTE": "Pending",
+    "APPROUVEE": "Approved",
+    "REJETEE": "Rejected",
+    "TERMINEE": "Completed",
+    "EN_COURS": "In Progress"
+  },
+  "dashboard": {
+    "welcome": "Hello",
+    "visitor_subtitle": "Track your visit requests history and status in real-time.",
+    "stats": {
+      "total": "Total Requests",
+      "pending": "Pending",
+      "approved": "Approved"
+    },
+    "history_title": "Appointment Tracking",
+    "refresh": "Refresh",
+    "empty": "No requests found."
+  },
+  "action": {
+    "new_request": "New Request"
+  },
+  "secretary": {
+    "dashboard": {
+      "title": "Secretary Space",
+      "subtitle": "Welcome. Organize visitor flows efficiently.",
+      "cards": {
+        "appointments": { "title": "Appointments", "desc": "Manage pending appointment requests and history." },
+        "visits": { "title": "Visits Today", "desc": "View and validate visitor access scheduled for today." }
+      },
+      "quick_links": {
+        "title": "Administrative Management",
+        "settings": { "title": "System Preferences", "subtitle": "Account settings" }
+      }
+    },
+    "appointments": {
+      "title": "Appointment Requests",
+      "subtitle": "Manage and validate requests submitted by visitors.",
+      "visitor": "Visitor",
+      "planning": "Planning",
+      "approve": "Approve",
+      "reject": "Reject",
+      "details": "Details",
+      "approve_success": "Appointment approved",
+      "reject_success": "Appointment rejected"
+    }
+  }
+}

@@ -14,7 +14,7 @@ import com.tech.visit_management.service.RendezVousService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/employe")
+@RequestMapping("/api/v1/employe")
 @RequiredArgsConstructor
 public class EmployeController {
 

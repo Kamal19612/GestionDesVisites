@@ -20,7 +20,7 @@ import com.tech.visit_management.service.VisiteService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/agent")
+@RequestMapping("/api/v1/agent")
 @RequiredArgsConstructor
 public class AgentController {
 

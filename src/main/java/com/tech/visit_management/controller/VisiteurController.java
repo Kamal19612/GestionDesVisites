@@ -19,7 +19,7 @@ import com.tech.visit_management.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/visiteur")
+@RequestMapping("/api/v1/visiteur")
 @RequiredArgsConstructor
 public class VisiteurController {
 

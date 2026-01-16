@@ -19,7 +19,7 @@ import com.tech.visit_management.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/secretaire")
+@RequestMapping("/api/v1/secretaire")
 @RequiredArgsConstructor
 public class SecretaireController {
 

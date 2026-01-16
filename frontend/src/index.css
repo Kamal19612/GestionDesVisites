@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    @apply h-full;
+  }
+  
+  body {
+    @apply bg-slate-50 text-vp-navy font-sans antialiased;
+    background-image: radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.05) 0, transparent 50%),
+                      radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.05) 0, transparent 50%);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-2.5 bg-gradient-to-r from-vp-cyan to-vp-mint 
+           text-white font-medium rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] 
+           active:scale-95 transition-all duration-200;
+  }
+
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20;
+  }
+
+  .card {
+    @apply glass rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300;
+  }
+}
+
+/* Custom animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes progress {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+.animate-progress {
+  animation: progress 2s linear forwards;
+}
+

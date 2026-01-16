@@ -1,0 +1,64 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "required": "Requis",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "actions": "Actions",
+    "date": "Date",
+    "status": "Statut",
+    "reason": "Motif",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "status": {
+    "EN_ATTENTE": "En attente",
+    "APPROUVEE": "Approuvée",
+    "REJETEE": "Rejetée",
+    "TERMINEE": "Terminée",
+    "EN_COURS": "En cours"
+  },
+  "dashboard": {
+    "welcome": "Bonjour",
+    "visitor_subtitle": "Retrouvez l'historique et le statut de vos demandes de visite en temps réel.",
+    "stats": {
+      "total": "Total Demandes",
+      "pending": "En Attente",
+      "approved": "Approuvées"
+    },
+    "history_title": "Suivi des rendez-vous",
+    "refresh": "Actualiser",
+    "empty": "Aucune demande enregistrée."
+  },
+  "action": {
+    "new_request": "Nouvelle Demande"
+  },
+  "secretary": {
+    "dashboard": {
+      "title": "Espace Secrétariat",
+      "subtitle": "Bienvenue. Organisez les flux de visiteurs efficacement.",
+      "cards": {
+        "appointments": { "title": "Rendez-vous", "desc": "Gérez les demandes de rendez-vous en attente et l'historique." },
+        "visits": { "title": "Visites du jour", "desc": "Consultez et validez l'accès des visiteurs prévus pour aujourd'hui." }
+      },
+      "quick_links": {
+        "title": "Gestion Administrative",
+        "settings": { "title": "Préférences Système", "subtitle": "Paramètres du compte" }
+      }
+    },
+    "appointments": {
+      "title": "Demandes de Rendez-vous",
+      "subtitle": "Gérez et validez les demandes soumises par les visiteurs.",
+      "visitor": "Visiteur",
+      "planning": "Planification",
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "details": "Détails",
+      "approve_success": "Rendez-vous approuvé",
+      "reject_success": "Rendez-vous rejeté"
+    }
+  }
+}
