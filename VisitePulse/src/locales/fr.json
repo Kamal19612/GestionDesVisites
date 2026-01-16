@@ -1,0 +1,120 @@
+{
+  "common": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "loading": "Chargement...",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "create": "Créer",
+    "back": "Retour",
+    "date": "Date",
+    "time": "Heure",
+    "status": "Statut",
+    "actions": "Actions",
+    "welcome": "Bienvenue",
+    "search": "Rechercher...",
+    "close": "Fermer",
+    "send": "Envoyer"
+  },
+  "login": {
+    "title": "Connectez-vous à votre espace",
+    "email_label": "Email",
+    "password_label": "Mot de passe",
+    "submit_button": "Se connecter",
+    "forgot_password": "Mot de passe oublié ?",
+    "success": "Connexion réussie",
+    "error": "Identifiants incorrects"
+  },
+  "nav": {
+    "admin": "Administration",
+    "agent": "Sécurité",
+    "employee": "Planning",
+    "visitor": "Mes Visites",
+    "secretary": "Secrétariat"
+  },
+  "admin": {
+    "title": "Tableau de Bord Admin",
+    "createUser": "Nouvel Utilisateur",
+    "report": "Rapport",
+    "stats": {
+      "visitors": "Visiteurs Actifs",
+      "employees": "Employés",
+      "rdvToday": "RDV Aujourd'hui",
+      "agents": "Agents Connectés",
+      "avgDuration": "Durée Moyenne",
+      "rejectRate": "Taux de Rejet",
+      "departments": "Départements"
+    },
+    "charts": {
+      "statusDistribution": "Répartition par Statut",
+      "weeklyVisits": "Visites Hebdomadaires"
+    },
+    "history": {
+      "title": "Historique Récent",
+      "visitor": "Visiteur",
+      "agent": "Agent Traitant"
+    },
+    "form": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Email",
+        "password": "Mot de passe",
+        "role": "Rôle"
+    },
+    "modal": {
+        "title": "Nouvel Utilisateur"
+    }
+  },
+  "agent": {
+    "title": "Espace Sécurité",
+    "subtitle": "Sélectionnez une action à effectuer",
+    "actions": {
+      "entry": "Enregistrer Entrée",
+      "exit": "Enregistrer Sortie",
+      "directRdv": "RDV Direct / Imprévu"
+    },
+    "forms": {
+      "scan": "Scanner ou entrer l'ID...",
+      "visitorId": "ID Visiteur (existant)",
+      "reason": "Motif de la visite",
+      "confirm": "Confirmer"
+    },
+    "success": {
+        "entry": "Entrée enregistrée avec succès",
+        "exit": "Sortie enregistrée avec succès",
+        "direct": "Rendez-vous direct créé"
+    }
+  },
+  "employee": {
+    "title": "Mon Planning",
+    "subtitle": "Vos rendez-vous de la journée",
+    "today": "Aujourd'hui",
+    "noRdv": "Aucun rendez-vous prévu aujourd'hui.",
+    "notifications": "Notifications",
+    "welcomeMsg": "Bienvenue sur votre espace employé."
+  },
+  "visitor": {
+    "title": "Mes Visites",
+    "newRequest": "Nouvelle Demande",
+    "noVisits": "Vous n'avez aucune demande de visite pour le moment.",
+    "modalTitle": "Planifier une visite",
+    "reasonPlaceholder": "Motif de votre visite...",
+    "success": "Demande envoyée avec succès !"
+  },
+  "secretary": {
+    "title": "Espace Secrétariat",
+    "subtitle": "Gérez les demandes de rendez-vous en attente.",
+    "pending": "Demandes en attente",
+    "noPending": "Aucune demande en attente pour le moment.",
+    "validated": "Rendez-vous validé !",
+    "refused": "Rendez-vous refusé."
+  },
+  "roles": {
+      "ADMIN": "Administrateur",
+      "AGENT": "Agent Sécurité",
+      "SECRETAIRE": "Secrétaire",
+      "EMPLOYE": "Employé",
+      "VISITEUR": "Visiteur"
+  }
+}

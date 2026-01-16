@@ -1,0 +1,120 @@
+{
+  "common": {
+    "login": "Login",
+    "logout": "Logout",
+    "loading": "Loading...",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "create": "Create",
+    "back": "Back",
+    "date": "Date",
+    "time": "Time",
+    "status": "Status",
+    "actions": "Actions",
+    "welcome": "Welcome",
+    "search": "Search...",
+    "close": "Close",
+    "send": "Send"
+  },
+  "login": {
+    "title": "Log in to your account",
+    "email_label": "Email",
+    "password_label": "Password",
+    "submit_button": "Log In",
+    "forgot_password": "Forgot password?",
+    "success": "Login successful",
+    "error": "Invalid credentials"
+  },
+  "nav": {
+    "admin": "Administration",
+    "agent": "Security",
+    "employee": "Schedule",
+    "visitor": "My Visits",
+    "secretary": "Front Desk"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "createUser": "New User",
+    "report": "Report",
+    "stats": {
+      "visitors": "Active Visitors",
+      "employees": "Employees",
+      "rdvToday": "Appointments Today",
+      "agents": "Agents Online",
+      "avgDuration": "Avg Duration",
+      "rejectRate": "Rejection Rate",
+      "departments": "Departments"
+    },
+    "charts": {
+      "statusDistribution": "Distribution by Status",
+      "weeklyVisits": "Weekly Visits"
+    },
+    "history": {
+      "title": "Recent History",
+      "visitor": "Visitor",
+      "agent": "Handling Agent"
+    },
+    "form": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "password": "Password",
+        "role": "Role"
+    },
+    "modal": {
+        "title": "New User"
+    }
+  },
+  "agent": {
+    "title": "Security Area",
+    "subtitle": "Select an action to perform",
+    "actions": {
+      "entry": "Register Entry",
+      "exit": "Register Exit",
+      "directRdv": "Direct / Walk-in RDV"
+    },
+    "forms": {
+      "scan": "Scan or enter ID...",
+      "visitorId": "Visitor ID (existing)",
+      "reason": "Reason for visit",
+      "confirm": "Confirm"
+    },
+    "success": {
+        "entry": "Entry registered successfully",
+        "exit": "Exit registered successfully",
+        "direct": "Direct appointment created"
+    }
+  },
+  "employee": {
+    "title": "My Schedule",
+    "subtitle": "Your appointments for today",
+    "today": "Today",
+    "noRdv": "No appointments scheduled for today.",
+    "notifications": "Notifications",
+    "welcomeMsg": "Welcome to your employee space."
+  },
+  "visitor": {
+    "title": "My Visits",
+    "newRequest": "New Request",
+    "noVisits": "You have no visit requests at the moment.",
+    "modalTitle": "Schedule a Visit",
+    "reasonPlaceholder": "Reason for your visit...",
+    "success": "Request sent successfully!"
+  },
+  "secretary": {
+    "title": "Front Desk Area",
+    "subtitle": "Manage pending appointment requests.",
+    "pending": "Pending Requests",
+    "noPending": "No pending requests at the moment.",
+    "validated": "Appointment validated!",
+    "refused": "Appointment refused."
+  },
+  "roles": {
+      "ADMIN": "Administrator",
+      "AGENT": "Security Agent",
+      "SECRETAIRE": "Secretary",
+      "EMPLOYE": "Employee",
+      "VISITEUR": "Visitor"
+  }
+}
