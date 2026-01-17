@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import userService from '../../services/userService';
 import toast from 'react-hot-toast';
 
-const ROLES = ['VISITEUR', 'SECRETAIRE', 'AGENT_SECURITE', 'EMPLOYE', 'ADMIN'];
+const ROLES = ['VISITEUR', 'SECRETAIRE', 'AGENT', 'EMPLOYE', 'ADMIN'];
 
 export default function UserForm() {
   const { id } = useParams();
@@ -21,19 +21,25 @@ export default function UserForm() {
     queryFn: () => userService.getUserById(id),
     enabled: isEdit,
     staleTime: 0,
-    onSuccess: (data) => {
-      if (data) {
-        const [firstName, ...lastNameParts] = data.name.split(' ');
-        const lastName = lastNameParts.join(' ') || '';
-        reset({ firstName, lastName, email: data.email, role: data.role, whatsapp: data.whatsapp || '' });
-      }
-    }
   });
+
+  useEffect(() => {
+    if (user && isEdit) {
+      console.log('User data loaded:', user);
+      reset({ 
+        firstName: user.prenom || '', 
+        lastName: user.nom || '', 
+        email: user.email, 
+        role: user.role, 
+        whatsapp: user.telephone || '' 
+      });
+    }
+  }, [user, isEdit, reset]);
 
   const createMutation = useMutation({
     mutationFn: (payload) => userService.createUser(payload),
-    onSuccess: () => { 
-      qc.invalidateQueries({ queryKey: ['users'] }); 
+    onSuccess: async () => { 
+      await qc.invalidateQueries({ queryKey: ['users'] }); 
       toast.success('Utilisateur créé avec succès'); 
       navigate('/admin/users'); 
     },
@@ -45,8 +51,8 @@ export default function UserForm() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, payload }) => userService.updateUser(id, payload),
-    onSuccess: () => { 
-      qc.invalidateQueries({ queryKey: ['users'] }); 
+    onSuccess: async () => { 
+      await qc.invalidateQueries({ queryKey: ['users'] }); 
       toast.success('Utilisateur mis à jour avec succès'); 
       navigate('/admin/users'); 
     },
@@ -62,11 +68,15 @@ export default function UserForm() {
       return;
     }
 
-    const payload = { ...data };
-    if (isEdit && (!payload.password || payload.password.trim() === '')) {
-      delete payload.password;
-      delete payload.confirmPassword;
-    }
+    const payload = { 
+      prenom: data.firstName,
+      nom: data.lastName,
+      email: data.email,
+      role: data.role,
+      telephone: data.whatsapp,
+      // Only include password if provided
+      ...(data.password ? { motDePasse: data.password } : {})
+    };
 
     if (isEdit) updateMutation.mutate({ id, payload });
     else createMutation.mutate(payload);
@@ -152,14 +162,14 @@ export default function UserForm() {
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-bold text-vp-navy ml-1">WhatsApp</label>
-                <input {...register('whatsapp')} className="w-full h-11 px-4 rounded-xl border border-slate-200 focus:border-vp-cyan focus:ring-4 focus:ring-vp-cyan/5 transition-all outline-none" placeholder="+212 ..." />
+                <label className="text-sm font-bold text-vp-navy ml-1">Numéro de téléphone</label>
+                <input {...register('whatsapp')} className="w-full h-11 px-4 rounded-xl border border-slate-200 focus:border-vp-cyan focus:ring-4 focus:ring-vp-cyan/5 transition-all outline-none" placeholder="+212 6..." />
               </div>
             </div>
 
             {/* Security Group */}
             <div className="space-y-6">
-              <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 border-b border-slate-100 pb-2">Sécurité</h2>
+              <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 border-b border-slate-100 pb-2">Modifier mot de passe</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-vp-navy ml-1">Mot de passe {isEdit && <span className="text-[10px] text-slate-400">(Facultatif)</span>}</label>

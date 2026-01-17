@@ -3,7 +3,7 @@ import logo from '../../assets/logo.jpeg';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
-export default function AppHeader() {
+export default function AppHeader({ organizationName }) {
   const { user, logout } = useAuth();
   const location = useLocation();
 
@@ -18,7 +18,7 @@ export default function AppHeader() {
                 <img src={logo} alt="VisitePulse" className="relative w-10 h-10 rounded-lg object-cover shadow-sm border border-white/50" />
               </div>
               <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-vp-navy to-vp-navy-light tracking-tight">
-                VisitePulse
+                {organizationName || 'VisitePulse'}
               </span>
             </Link>
 

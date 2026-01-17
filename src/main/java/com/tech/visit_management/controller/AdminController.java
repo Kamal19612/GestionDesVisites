@@ -85,7 +85,10 @@ public class AdminController {
     // Let's add simple Delete. Update is more complex (password etc).
     @org.springframework.web.bind.annotation.PutMapping("/users/{id}")
     public ResponseEntity<UserDto> updateUser(@org.springframework.web.bind.annotation.PathVariable Long id, @RequestBody UserDto userDto) {
-        // Idéalement on utilise le Service pour tout
+        // Encodage du mot de passe si fourni
+        if (userDto.getMotDePasse() != null && !userDto.getMotDePasse().isEmpty()) {
+            userDto.setMotDePasse(passwordEncoder.encode(userDto.getMotDePasse()));
+        }
         return ResponseEntity.ok(userService.updateUser(id, userDto));
     }
 

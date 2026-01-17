@@ -15,22 +15,33 @@ export default function AgentDashboard() {
   // Today's appointments
   const { data: todayAppointments = [], isLoading: aptsLoading } = useQuery({
     queryKey: ['appointments', 'today'],
-    queryFn: () => visitService.getVisitsToday(), // Used Agent specific endpoint
+    queryFn: () => appointmentService.getAgentTodayAppointments(),
     staleTime: 0,
-    refetchInterval: 30000,
+    refetchInterval: 5000,
   })
 
-  // Today's visits
+  // Today's visits (All movements today)
   const { data: visitsToday = [], isLoading: visitsLoading, refetch: refetchVisits } = useQuery({
     queryKey: ['visits', 'today'],
-    queryFn: () => visitService.getActiveVisits(),
+    queryFn: () => visitService.getVisitsToday(),
     staleTime: 0,
-    refetchInterval: 30000,
+    refetchInterval: 5000,
   })
 
-  const pendingAppointments = todayAppointments.filter(a => a.statut === 'EN_ATTENTE').length
-  const ongoingVisits = visitsToday.filter(v => !v.HSortie).length
-  const completedVisits = visitsToday.filter(v => v.HSortie).length
+  // derived stats
+  const validAppointmentsCount = todayAppointments.filter(a => a.statut === 'VALIDE' || a.statut === 'APPROUVEE' || a.status === 'VALIDE').length;
+  // Visits that have actually started (have arrival time)
+  const startedVisitsCount = visitsToday.filter(v => v.heureArrivee).length;
+  
+  // Pending = Expected (Valid) - Started (Arrived)
+  // Note: This is an approximation. Ideally we match IDs. But for dashboard stats it's close enough.
+  const pendingAppointments = Math.max(0, validAppointmentsCount - startedVisitsCount);
+  
+  // On Site = Started AND Not Ended
+  const ongoingVisits = visitsToday.filter(v => v.heureArrivee && !v.heureSortie).length;
+  
+  // Completed = Ended
+  const completedVisits = visitsToday.filter(v => v.heureSortie).length;
 
   const handleCheckout = async (visitId) => {
     try {
@@ -56,7 +67,7 @@ export default function AgentDashboard() {
   });
 
   const stats = [
-    { label: t('agent.dashboard.stats.appointments.label'), value: todayAppointments.length, sub: t('agent.dashboard.stats.appointments.sub'), color: "text-vp-cyan", bg: "bg-vp-cyan/10", icon: "📅" },
+    { label: t('agent.dashboard.stats.appointments.label'), value: validAppointmentsCount, sub: t('agent.dashboard.stats.appointments.sub'), color: "text-vp-cyan", bg: "bg-vp-cyan/10", icon: "📅" },
     { label: t('agent.dashboard.stats.pending.label'), value: pendingAppointments, sub: t('agent.dashboard.stats.pending.sub'), color: "text-amber-500", bg: "bg-amber-100", icon: "⏳" },
     { label: t('agent.dashboard.stats.onsite.label'), value: ongoingVisits, sub: t('agent.dashboard.stats.onsite.sub'), color: "text-vp-mint", bg: "bg-vp-mint/10", icon: "🚪" },
     { label: t('agent.dashboard.stats.completed.label'), value: completedVisits, sub: t('agent.dashboard.stats.completed.sub'), color: "text-slate-500", bg: "bg-slate-100", icon: "✅" }
@@ -100,17 +111,17 @@ export default function AgentDashboard() {
         <div className="space-y-4">
           <div className="flex items-center justify-between px-2">
             <h2 className="text-lg font-bold text-vp-navy flex items-center gap-2">
-              <span className="text-vp-cyan">📅</span> {t('agent.dashboard.appointments.title')}
+              <span className="text-vp-cyan">📅</span> {t('agent.appointments.title')}
             </h2>
-            <Link to="/agent/appointments/validate" className="text-[10px] font-black text-vp-cyan uppercase tracking-[0.2em] hover:underline">{t('agent.dashboard.appointments.view_all')}</Link>
+            <Link to="/agent/appointments/validate" className="text-[10px] font-black text-vp-cyan uppercase tracking-[0.2em] hover:underline">{t('agent.appointments.view_all')}</Link>
           </div>
           <div className="card fill-slate-50/50 p-4 border-none shadow-xl shadow-slate-200/50">
             {aptsLoading ? (
-              <div className="py-12 text-center text-slate-400 text-xs font-bold uppercase tracking-widest animate-pulse">{t('agent.dashboard.appointments.sync')}</div>
+              <div className="py-12 text-center text-slate-400 text-xs font-bold uppercase tracking-widest animate-pulse">{t('agent.appointments.sync')}</div>
             ) : todayAppointments.length === 0 ? (
               <div className="py-12 text-center text-slate-300">
                  <p className="text-2xl mb-2">📭</p>
-                 <p className="font-bold uppercase text-[9px] tracking-widest">{t('agent.dashboard.appointments.empty')}</p>
+                 <p className="font-bold uppercase text-[9px] tracking-widest">{t('agent.appointments.empty')}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -122,7 +133,9 @@ export default function AgentDashboard() {
                       </div>
                       <div>
                         <p className="font-black text-sm text-vp-navy group-hover:text-vp-cyan transition-colors">{apt.visitorName}</p>
-                        <p className="text-[10px] font-bold text-slate-400">{formatTime(apt.appointmentTime || apt.time)}</p>
+                         <p className="text-[10px] font-bold text-slate-400">
+                            <span className="text-vp-navy/60">{apt.date}</span> <span className="text-slate-300 mx-1">|</span> {formatTime(apt.heure)}
+                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -148,22 +161,22 @@ export default function AgentDashboard() {
         <div className="space-y-4">
           <div className="flex items-center justify-between px-2">
             <h2 className="text-lg font-bold text-vp-navy flex items-center gap-2">
-              <span className="text-vp-mint">🚪</span> {t('agent.dashboard.visits.title')}
+              <span className="text-vp-mint">🚪</span> {t('agent.visits.title')}
             </h2>
-            <Link to="/agent/current-visitors" className="text-[10px] font-black text-vp-cyan uppercase tracking-[0.2em] hover:underline">{t('agent.dashboard.visits.full_list')}</Link>
+            <Link to="/agent/current-visitors" className="text-[10px] font-black text-vp-cyan uppercase tracking-[0.2em] hover:underline">{t('agent.visits.full_list')}</Link>
           </div>
           <div className="card fill-vp-navy p-4 border-none bg-vp-navy shadow-xl shadow-vp-navy/20 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-vp-cyan/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
             {visitsLoading ? (
-              <div className="py-12 text-center text-white/20 text-xs font-bold uppercase tracking-widest animate-pulse">{t('agent.dashboard.appointments.sync')}</div>
-            ) : (visitsToday.filter(v => !v.HSortie).length === 0) ? (
+              <div className="py-12 text-center text-white/20 text-xs font-bold uppercase tracking-widest animate-pulse">{t('agent.appointments.sync')}</div>
+            ) : (visitsToday.filter(v => v.heureArrivee && !v.heureSortie).length === 0) ? (
               <div className="py-12 text-center text-white/30">
                  <p className="text-2xl mb-2">👥</p>
-                 <p className="font-bold uppercase text-[9px] tracking-widest">{t('agent.dashboard.visits.empty')}</p>
+                 <p className="font-bold uppercase text-[9px] tracking-widest">{t('agent.visits.empty')}</p>
               </div>
             ) : (
               <div className="space-y-3 relative z-10">
-                {visitsToday.filter(v => !v.HSortie).slice(0, 5).map(visit => (
+                {visitsToday.filter(v => v.heureArrivee && !v.heureSortie).slice(0, 5).map(visit => (
                   <div key={visit.id} className="p-3 bg-white/5 rounded-xl border border-white/5 flex items-center justify-between text-white hover:bg-white/10 transition-all group">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-vp-mint text-white flex items-center justify-center font-black text-[10px] uppercase shadow-lg shadow-vp-mint/30 group-hover:scale-105 transition-transform">
@@ -172,7 +185,7 @@ export default function AgentDashboard() {
                       <div>
                         <p className="font-bold text-sm">{visit.visitorName || 'Visiteur'}</p>
                         <p className="text-[10px] text-white/50 font-medium">
-                          Entrée : {formatTime(visit.time || visit.HEntree)}
+                          Entrée : {formatTime(visit.heureArrivee)}
                         </p>
                       </div>
                     </div>
@@ -180,7 +193,7 @@ export default function AgentDashboard() {
                       onClick={() => handleCheckout(visit.id)}
                       className="px-3 py-1.5 bg-vp-cyan hover:bg-vp-cyan/80 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all shadow-lg shadow-vp-cyan/20"
                     >
-                      {t('agent.dashboard.visits.checkout')}
+                      SIGNALER SORTIE
                     </button>
                   </div>
                 ))}

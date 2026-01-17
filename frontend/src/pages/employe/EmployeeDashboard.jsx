@@ -4,16 +4,19 @@ import { useQuery } from '@tanstack/react-query';
 import appointmentService from '../../services/appointmentService';
 
 export default function EmployeeDashboard() {
-  const { data: appointments = [], isLoading } = useQuery({
-    queryKey: ['employee', 'appointments'],
-    queryFn: appointmentService.getAppointments,
+  const { data: approvedAppointments = [], isLoading } = useQuery({
+    queryKey: ['employee', 'appointments', 'today'],
+    queryFn: appointmentService.getTodayAppointments,
     staleTime: 0,
     refetchInterval: 30000,
   });
 
-  const approvedAppointments = appointments
-    .filter(a => a.statut === 'APPROUVEE')
-    .sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
+  // Backend already filters by today and validated status
+  // so no client-side filtering needed unless we want to be extra safe
+  // Sorting by time is still good for UI
+  const sortedAppointments = [...approvedAppointments].sort((a, b) => {
+     return new Date('1970/01/01 ' + a.appointmentTime) - new Date('1970/01/01 ' + b.appointmentTime);
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -25,7 +28,7 @@ export default function EmployeeDashboard() {
         <div className="flex gap-4">
            <div className="card py-2 px-6 flex items-center gap-3 text-sm font-bold text-vp-navy bg-vp-cyan/10 border-vp-cyan/20">
               <span className="w-2 h-2 rounded-full bg-vp-cyan animate-pulse"></span>
-              {approvedAppointments.length} Confirmés
+              {sortedAppointments.length} Confirmés
            </div>
         </div>
       </div>
@@ -41,7 +44,7 @@ export default function EmployeeDashboard() {
              <div className="animate-spin w-10 h-10 border-4 border-vp-cyan border-t-transparent rounded-full mx-auto mb-4"></div>
              <p className="font-medium tracking-wide uppercase text-[10px]">Actualisation du planning...</p>
           </div>
-        ) : approvedAppointments.length === 0 ? (
+        ) : sortedAppointments.length === 0 ? (
           <div className="p-20 text-center text-slate-400">
              <p className="text-4xl mb-6">📅</p>
              <p className="font-medium uppercase text-xs tracking-[0.2em] mb-2">Aucun rendez-vous pour le moment</p>
@@ -59,7 +62,7 @@ export default function EmployeeDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {approvedAppointments.map((apt) => (
+                {sortedAppointments.map((apt) => (
                   <tr key={apt.id} className="group hover:bg-slate-50/50 transition-colors">
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-4">

@@ -8,7 +8,7 @@ import { useAuth } from '../../hooks/useAuth';
 import Input from '../../components/Form/Input';
 
 export default function AppointmentRequest() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
@@ -17,7 +17,10 @@ export default function AppointmentRequest() {
       toast.error('Connexion requise pour cette action');
       navigate('/login');
     }
-  }, [user, loading, navigate]);
+    if (user?.telephone) {
+        setValue('whatsapp', user.telephone);
+    }
+  }, [user, loading, navigate, setValue]);
 
   const mutation = useMutation({
     mutationFn: (data) => appointmentService.createAppointment(data),
@@ -37,6 +40,7 @@ export default function AppointmentRequest() {
       motif: data.motif,
       personneARencontrer: data.personneARencontrer,
       departement: data.departement,
+      whatsapp: data.whatsapp,
     };
     mutation.mutate(cleanedData);
   };
@@ -87,6 +91,14 @@ export default function AppointmentRequest() {
                    {errors.heure && <p className="text-[10px] text-red-500 font-bold mt-1 px-1">{errors.heure.message}</p>}
                  </div>
                </div>
+               
+               <Input 
+                  label="WhatsApp / Téléphone (pour recevoir le code)" 
+                  name="whatsapp" 
+                  register={register} 
+                  placeholder="+212 ..."
+                  className="rounded-2xl h-[55px] bg-slate-50/50 border-slate-200"
+               />
             </div>
 
             {/* Sec 2: Destination */}

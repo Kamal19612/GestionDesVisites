@@ -45,7 +45,7 @@ export default function VisitorDashboard() {
       setStats({
         total: appointments.length,
         pending: appointments.filter(a => a.statut === 'EN_ATTENTE').length,
-        approved: appointments.filter(a => a.statut === 'APPROUVEE').length
+        approved: appointments.filter(a => a.statut === 'VALIDE').length
       });
     }
   }, [appointments]);
@@ -80,7 +80,20 @@ export default function VisitorDashboard() {
       key: 'statut', 
       header: t('common.status'), 
       className: 'text-center',
-      render: (row) => <div className="text-center"><StatusBadge status={row.statut} /></div>
+      render: (row) => (
+        <div className="flex flex-col items-center gap-2">
+           <StatusBadge status={row.statut} />
+           {/* Display Code if Approved */}
+           {(row.statut === 'VALIDE') && row.code && (
+               <div className="flex flex-col items-center animate-fade-in-up mt-1">
+                   <div className="bg-slate-50 text-vp-navy px-3 py-1 rounded-lg font-mono font-black text-xs tracking-wider border border-slate-200 shadow-sm flex items-center gap-2 group cursor-pointer hover:bg-vp-navy hover:text-white transition-all" title="Code d'accès à présenter">
+                       <span className="opacity-50 text-[10px]">#</span>
+                       {row.code}
+                   </div>
+               </div>
+           )}
+        </div>
+      )
     },
     {
       key: 'actions',
@@ -89,7 +102,7 @@ export default function VisitorDashboard() {
       render: (row) => (
        <div className="text-right flex justify-end gap-2">
            {/* Show Pass if Approved */}
-           {row.statut === 'APPROUVEE' && (
+           {row.statut === 'VALIDE' && (
              <Link 
                to={`/visitor/pass/${row.id}`}
                className="p-3 rounded-xl bg-vp-mint/10 text-vp-mint hover:bg-vp-mint hover:text-white transition-all"

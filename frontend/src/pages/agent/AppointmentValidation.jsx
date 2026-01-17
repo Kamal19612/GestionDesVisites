@@ -15,10 +15,10 @@ export default function AppointmentValidation() {
   const [rejectReason, setRejectReason] = useState('');
 
   const { data: appointments = [], isLoading, isError } = useQuery({
-    queryKey: ['appointments', 'pending'],
-    queryFn: () => appointmentService.getPendingAppointments(),
+    queryKey: ['appointments', 'all'],
+    queryFn: () => appointmentService.getAllAppointments(),
     staleTime: 0,
-    refetchInterval: 30000,
+    refetchInterval: 5000,
   });
 
   const { user } = useAuth();
@@ -58,13 +58,60 @@ export default function AppointmentValidation() {
     );
   }
 
-  const filteredAppointments = appointments.filter(a => a.statut === filterStatus);
+  const parseDate = (dateVal) => {
+    if (!dateVal) return new Date(0);
+    if (Array.isArray(dateVal)) return new Date(dateVal[0], dateVal[1] - 1, dateVal[2]);
+    return new Date(dateVal);
+  };
+
+  const filteredAppointments = appointments.filter(apt => {
+    // 1. Status Filter
+    if (apt.statut !== filterStatus) return false;
+
+    // 2. Archive Filter (Hide past appointments)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Start of today
+    
+    // Safety check for date
+    if (!apt.date) return false;
+    
+    const aptDate = parseDate(apt.date);
+    
+    // If date is in the past (strictly before today), hide it
+    if (aptDate < today) return false;
+    
+    // If date is today, check time
+    if (aptDate.getTime() === today.getTime()) {
+         const now = new Date();
+         const nowH = now.getHours();
+         const nowM = now.getMinutes();
+         let itemH = 0, itemM = 0;
+         
+         const timeVal = apt.heure || apt.appointmentTime || apt.time;
+         if (Array.isArray(timeVal)) {
+             itemH = timeVal[0];
+             itemM = timeVal[1];
+         } else if (typeof timeVal === 'string' && timeVal.includes(':')) {
+             const parts = timeVal.split(':');
+             itemH = parseInt(parts[0], 10);
+             itemM = parseInt(parts[1], 10);
+         }
+         
+         // If time passed, consider it archived? 
+         // User said "rendez vous a venir". So if 10:00 and it is 11:00, it is passed.
+         if (itemH < nowH || (itemH === nowH && itemM < nowM)) {
+             return false;
+         }
+    }
+
+    return true;
+  });
 
   const getStatusDisplay = (status) => {
     switch (status) {
-      case 'EN_ATTENTE': return { label: t('status.pending'), icon: '⏳', color: 'bg-amber-100 text-amber-600 border-amber-200' };
-      case 'APPROUVEE': return { label: t('status.approved'), icon: '✅', color: 'bg-vp-mint/10 text-vp-mint border-vp-mint/20' };
-      case 'REJETEE': return { label: t('status.rejected'), icon: '❌', color: 'bg-rose-100 text-rose-600 border-rose-200' };
+      case 'EN_ATTENTE': return { label: t('status.EN_ATTENTE'), icon: '⏳', color: 'bg-amber-100 text-amber-600 border-amber-200' };
+      case 'VALIDE': return { label: t('status.VALIDE'), icon: '✅', color: 'bg-vp-mint/10 text-vp-mint border-vp-mint/20' };
+      case 'REFUSE': return { label: t('status.REFUSE'), icon: '❌', color: 'bg-rose-100 text-rose-600 border-rose-200' };
       default: return { label: status, icon: '•', color: 'bg-slate-100 text-slate-500 border-slate-200' };
     }
   };
@@ -79,7 +126,7 @@ export default function AppointmentValidation() {
         />
         
         <div className="flex p-1.5 bg-slate-100/50 backdrop-blur-sm rounded-2xl border border-slate-200/50">
-          {['EN_ATTENTE', 'APPROUVEE', 'REJETEE'].map(status => {
+          {['EN_ATTENTE', 'VALIDE', 'REFUSE'].map(status => {
             const display = getStatusDisplay(status);
             const active = filterStatus === status;
             return (
@@ -138,12 +185,12 @@ export default function AppointmentValidation() {
                       <span className="text-sm">📅</span>
                       <div>
                         <p className="text-[10px] font-black text-vp-navy leading-none mb-0.5">{apt.date}</p>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Heure: {apt.time}</p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Heure: {apt.heure}</p>
                       </div>
                    </div>
                    <div className="flex items-center gap-3">
                       <span className="text-sm">🏢</span>
-                      <p className="text-[9px] font-black uppercase tracking-widest text-vp-cyan">{apt.department}</p>
+                      <p className="text-[9px] font-black uppercase tracking-widest text-vp-cyan">{apt.departement}</p>
                    </div>
                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 italic shadow-inner">
                       <p className="text-[8px] font-black uppercase tracking-widest text-slate-300 mb-1">Motif du RDV</p>

@@ -268,16 +268,7 @@ export default function MainLayout({ children }) {
             </div>
 
             {/* Logout Action */}
-            {user && (
-              <div className="pt-8 border-t border-slate-100">
-                <button 
-                  onClick={logout} 
-                  className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-rose-500 hover:bg-rose-50 transition-all border border-transparent hover:border-rose-100"
-                >
-                  🚪 Déconnexion
-                </button>
-              </div>
-            )}
+
           </div>
         </aside>
 

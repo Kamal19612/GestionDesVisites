@@ -7,6 +7,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import VerifyEmail from './pages/auth/VerifyEmail';
 import App from './App';
+import Documentation from './pages/public/Documentation';
 import VisitorDashboard from './pages/visitor/VisitorDashboard';
 import AppointmentRequest from './pages/visitor/AppointmentRequest';
 import AccessPass from './pages/visitor/AccessPass';
@@ -79,6 +80,7 @@ export default function AppRoutes() {
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<App />} /> {/* Landing page or public home */}
+            <Route path="/documentation" element={<Documentation />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
             <Route path="/auth/verify-email" element={<VerifyEmail />} />

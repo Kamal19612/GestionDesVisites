@@ -79,5 +79,10 @@ const appointmentService = {
     const response = await api.post(`/agent/visites/${appointmentId}/sortie`);
     return response.data;
   },
+  // Get all today's appointments for Agent (Organization wide)
+  getAgentTodayAppointments: async () => {
+    const response = await api.get('/agent/rendezvous/aujourdhui');
+    return response.data;
+  },
 };
 export default appointmentService;

@@ -21,6 +21,7 @@ import com.tech.visit_management.enums.TypeNotification;
 import com.tech.visit_management.enums.TypeRendezVous;
 import com.tech.visit_management.mapper.RendezVousMapper;
 import com.tech.visit_management.repository.RendezVousRepository;
+import com.tech.visit_management.repository.UsersRepository;
 import com.tech.visit_management.repository.VisiteursRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class RendezVousService {
 
     private final RendezVousRepository rendezVousRepository;
     private final VisiteursRepository visiteursRepository;
+    private final UsersRepository usersRepository;
     private final VisiteService visiteService;
     private final NotificationService notificationService;
     private final RendezVousMapper rendezVousMapper;
@@ -45,13 +47,20 @@ public class RendezVousService {
             throw new AccessDeniedException("Seul un visiteur peut demander un rendez-vous planifié.");
         }
 
+        // Mise à jour du téléphone si fourni
+        if (rdvDto.getWhatsapp() != null && !rdvDto.getWhatsapp().trim().isEmpty()) {
+            userVisiteur.setTelephone(rdvDto.getWhatsapp());
+            userVisiteur = usersRepository.save(userVisiteur);
+        }
+
+        Users finalUser = userVisiteur; // For lambda
         Visiteurs visiteur = visiteursRepository.findAll().stream()
-                .filter(v -> v.getUser().getId().equals(userVisiteur.getId()))
+                .filter(v -> v.getUser().getId().equals(finalUser.getId()))
                 .findFirst()
                 .orElseGet(() -> {
                     // Auto-recovery: Créer le profil s'il manque
                     Visiteurs newVisiteur = Visiteurs.builder()
-                            .user(userVisiteur)
+                            .user(finalUser)
                             .build();
                     return visiteursRepository.save(newVisiteur);
                 });

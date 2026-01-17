@@ -20,11 +20,11 @@
     "back": "Retour"
   },
   "status": {
-    "EN_ATTENTE": "En attente",
-    "APPROUVEE": "Approuvée",
-    "REJETEE": "Rejetée",
-    "TERMINEE": "Terminée",
-    "EN_COURS": "En cours"
+    "EN_ATTENTE": "En Attente de Validation",
+    "VALIDE": "Validée / Autorisée",
+    "REFUSE": "Refusée",
+    "TERMINEE": "Visite Terminée (Sortie)",
+    "EN_COURS": "Visite En Cours"
   },
   "dashboard": {
     "welcome": "Bonjour",
@@ -83,11 +83,11 @@
       }
     },
     "appointments": {
-        "title": "VISITEURS ATTENDUS",
-        "subtitle": "Liste des personnes autorisées à entrer",
-        "view_all": "Voir le planning complet",
-        "sync": "Mise à jour...",
-        "empty": "Aucun visiteur attendu pour le moment."
+        "title": "RENDEZ-VOUS VALIDÉS (ACCÈS AUTORISÉ)",
+        "subtitle": "Cliquez sur un visiteur pour valider son arrivée immédiatement.",
+        "view_all": "Consulter tous les RDV",
+        "sync": "Synchronisation...",
+        "empty": "Aucun visiteur avec RDV n'est attendu pour l'instant."
     },
     "visits": {
         "title": "Visiteurs Présents sur Site",
@@ -168,23 +168,23 @@
       }
     },
     "history": {
-      "title": "Registre & Attentes",
-      "subtitle": "Synchronisation des flux passés et des visites à venir.",
+      "title": "REGISTRE GLOBAL & PLANIFICATIONS",
+      "subtitle": "Consultez l'historique complet des passages et les prévisions de visites à venir.",
       "tabs": {
-        "archives": "Archives",
-        "upcoming": "À Venir"
+        "archives": "ARCHIVES (PASSÉ)",
+        "upcoming": "FUTUR (À VENIR)"
       },
       "table": {
-        "time": "Temporel",
-        "visitor": "Visiteur",
-        "goal": "Objectif & Lieu",
-        "state": "État"
+        "time": "DATE ET HORAIRE",
+        "visitor": "VISITEUR",
+        "goal": "MOTIF & DESTINATION",
+        "state": "STATUT ACTUEL"
       },
       "status": {
-        "confirmed_identity": "Identité confirmée",
-        "validated": "Validée",
-        "closed": "Clôturée",
-        "active": "Active"
+        "confirmed_identity": "Identité Vérifiée",
+        "validated": "RDV Validé",
+        "closed": "Sortie Effectuée",
+        "active": "Présent sur Site"
       }
 
     }

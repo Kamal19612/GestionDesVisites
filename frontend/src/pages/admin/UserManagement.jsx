@@ -12,6 +12,7 @@ export default function UserManagement() {
     queryFn: () => userService.getUsers(),
     staleTime: 0,
     refetchInterval: 30000,
+    refetchOnMount: 'always',
   });
 
   const users = Array.isArray(rawUsers) ? rawUsers : (rawUsers?.content || []);
@@ -37,8 +38,8 @@ export default function UserManagement() {
     const roles = {
       'ADMIN': 'bg-vp-navy text-white',
       'SECRETAIRE': 'bg-vp-cyan/10 text-vp-cyan border-vp-cyan/20',
-      'AGENT_SECURITE': 'bg-vp-mint/10 text-vp-mint border-vp-mint/20',
-      'EMPLOYEUR': 'bg-slate-100 text-slate-600 border-slate-200'
+      'AGENT': 'bg-vp-mint/10 text-vp-mint border-vp-mint/20',
+      'EMPLOYE': 'bg-slate-100 text-slate-600 border-slate-200'
     };
     return roles[role] || 'bg-gray-100 text-gray-600';
   };
@@ -77,27 +78,29 @@ export default function UserManagement() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50/50 border-b border-slate-100">
-                  <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-slate-400">Utilisateur</th>
-                  <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-slate-400">Rôle</th>
-                  <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-slate-400 text-right">Actions</th>
+                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Utilisateur</th>
+                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Rôle</th>
+                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {users.map((user) => (
                   <tr key={user.id} className="hover:bg-slate-50/30 transition-colors group">
-                    <td className="px-8 py-6">
+                    <td className="px-6 py-3">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-vp-navy to-slate-700 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                          {user.name?.charAt(0) || user.email?.charAt(0).toUpperCase()}
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-vp-navy to-slate-700 flex items-center justify-center text-white font-bold text-xs shadow-md">
+                          {(user.prenom?.[0] || '') + (user.nom?.[0] || '') || user.email?.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="font-bold text-vp-navy group-hover:text-vp-cyan transition-colors">{user.name || 'Sans nom'}</p>
-                          <p className="text-sm text-slate-400">{user.email}</p>
+                          <p className="font-bold text-vp-navy text-sm group-hover:text-vp-cyan transition-colors">
+                            {user.prenom || user.nom ? `${user.prenom || ''} ${user.nom || ''}`.trim() : 'Sans nom'}
+                          </p>
+                          <p className="text-xs text-slate-400">{user.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${getRoleBadge(user.role)}`}>
+                    <td className="px-6 py-3">
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border ${getRoleBadge(user.role)}`}>
                         {user.role}
                       </span>
                     </td>

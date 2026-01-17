@@ -8,6 +8,7 @@ import com.tech.visit_management.entity.Visiteurs;
 
 @Component
 public class RendezVousMapper {
+    // Mapper for RendezVous entity to DTO
 
     public RendezVousDto toDto(RendezVous rdv) {
         if (rdv == null) {
@@ -16,11 +17,15 @@ public class RendezVousMapper {
         return RendezVousDto.builder()
                 .id(rdv.getId())
                 .visiteurId(rdv.getVisiteur() != null ? rdv.getVisiteur().getId() : null)
-                .visiteurNom(rdv.getVisiteur() != null && rdv.getVisiteur().getUser() != null
+                .visitorName(rdv.getVisiteur() != null && rdv.getVisiteur().getUser() != null
                         ? rdv.getVisiteur().getUser().getNom() + " " + rdv.getVisiteur().getUser().getPrenom() : "")
+                .email(rdv.getVisiteur() != null && rdv.getVisiteur().getUser() != null ? rdv.getVisiteur().getUser().getEmail() : "")
+                .whatsapp(rdv.getVisiteur() != null && rdv.getVisiteur().getUser() != null ? rdv.getVisiteur().getUser().getTelephone() : "")
                 .date(rdv.getDate())
                 .heure(rdv.getHeure())
                 .motif(rdv.getMotif())
+                .personneARencontrer(rdv.getPersonneARencontrer())
+                .departement(rdv.getDepartement())
                 .type(rdv.getType())
                 .statut(rdv.getStatut())
                 .code(rdv.getCode())
@@ -37,6 +42,8 @@ public class RendezVousMapper {
                 .date(dto.getDate())
                 .heure(dto.getHeure())
                 .motif(dto.getMotif())
+                .personneARencontrer(dto.getPersonneARencontrer())
+                .departement(dto.getDepartement())
                 .type(dto.getType())
                 .statut(dto.getStatut())
                 .code(dto.getCode())

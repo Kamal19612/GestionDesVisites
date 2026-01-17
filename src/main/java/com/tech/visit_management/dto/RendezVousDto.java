@@ -19,7 +19,9 @@ public class RendezVousDto {
 
     private Long id;
     private Long visiteurId;
-    private String visiteurNom; // Pour affichage
+    private String visitorName; // Renamed from visiteurNom
+    private String email;
+    private String whatsapp;
     private LocalDate date;
     private LocalTime heure;
     private String motif;

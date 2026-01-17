@@ -134,6 +134,13 @@ export default function AppointmentDetails() {
                   readOnly={!isEditing}
                   className={`rounded-xl ${!isEditing ? 'bg-slate-50/50 border-transparent italic' : 'border-slate-200'}`}
                 />
+                <Input 
+                  label="Département" 
+                  name="departement" 
+                  register={register} 
+                  readOnly={!isEditing}
+                  className={`rounded-xl ${!isEditing ? 'bg-slate-50/50 border-transparent italic' : 'border-slate-200'}`}
+                />
               </div>
             </div>
 
@@ -151,7 +158,7 @@ export default function AppointmentDetails() {
                 />
                 <Input 
                   label="Heure" 
-                  name="time" 
+                  name="heure" 
                   type="time"
                   register={register} 
                   readOnly={!isEditing}

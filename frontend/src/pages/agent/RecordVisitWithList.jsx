@@ -34,7 +34,7 @@ export default function RecordVisitWithList() {
     queryKey: ['visits', 'today'],
     queryFn: () => visitService.getVisitsToday(),
     staleTime: 0,
-    refetchInterval: 30000,
+    refetchInterval: 5000,
   });
   const visitsToday = Array.isArray(rawVisits) ? rawVisits : (rawVisits?.content || []);
 
@@ -42,7 +42,7 @@ export default function RecordVisitWithList() {
     queryKey: ['appointments', 'today'],
     queryFn: () => appointmentService.getTodayAppointments(),
     staleTime: 0,
-    refetchInterval: 30000,
+    refetchInterval: 5000,
   });
   const todayAppointments = Array.isArray(rawAppointments) ? rawAppointments : (rawAppointments?.content || []);
 
@@ -366,7 +366,7 @@ export default function RecordVisitWithList() {
                 <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">
                    {visitsToday.map((visit) => (
                      <div key={visit.id} className="relative p-5 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group overflow-hidden">
-                        <div className={`absolute top-0 left-0 w-1.5 h-full ${visit.HSortie ? 'bg-slate-200' : 'bg-vp-cyan'}`}></div>
+                        <div className={`absolute top-0 left-0 w-1.5 h-full ${visit.heureSortie ? 'bg-slate-200' : 'bg-vp-cyan'}`}></div>
                         
                         <div className="flex justify-between items-start mb-4">
                            <div className="flex items-center gap-3">
@@ -421,13 +421,13 @@ export default function RecordVisitWithList() {
               </div>
               
               <div className="flex-1 p-4 space-y-3 overflow-y-auto custom-scrollbar-dark relative z-10">
-                {todayAppointments.filter(a => a.statut === 'APPROUVEE').length === 0 ? (
+                {todayAppointments.filter(a => a.statut === 'VALIDE' || a.statut === 'APPROUVEE' || a.status === 'VALIDE').length === 0 ? (
                   <div className="text-center py-20 opacity-30 flex flex-col items-center gap-4">
                     <span className="text-5xl grayscale">📅</span>
                     <p className="text-[10px] font-black uppercase tracking-widest">{t('agent.appointments.empty')}</p>
                   </div>
                 ) : (
-                  todayAppointments.filter(a => a.statut === 'APPROUVEE').map(apt => (
+                  todayAppointments.filter(a => a.statut === 'VALIDE' || a.statut === 'APPROUVEE' || a.status === 'VALIDE').map(apt => (
                     <button 
                       key={apt.id}
                       onClick={() => fillFromAppointment(apt)}
@@ -437,7 +437,7 @@ export default function RecordVisitWithList() {
                       
                       <div className="flex justify-between w-full items-center">
                          <span className="text-sm font-black text-white group-hover:text-vp-cyan transition-colors line-clamp-1">{apt.visitorName}</span>
-                         <span className="px-2 py-0.5 bg-vp-cyan/20 text-vp-cyan text-[10px] font-black rounded-lg whitespace-nowrap">{apt.appointmentTime || apt.time}</span>
+                         <span className="px-2 py-0.5 bg-vp-cyan/20 text-vp-cyan text-[10px] font-black rounded-lg whitespace-nowrap">{apt.heure || apt.appointmentTime || '--:--'}</span>
                       </div>
                       
                       <div className="flex flex-col gap-1.5 text-[9px] text-slate-400 font-bold uppercase tracking-tight w-full">

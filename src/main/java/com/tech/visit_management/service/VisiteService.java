@@ -45,7 +45,7 @@ public class VisiteService {
     public Visites createVisiteForRendezVous(RendezVous rdv, Users agent) {
         Visites visite = Visites.builder()
                 .rendezVous(rdv)
-                .date(LocalDate.now())
+                .date(rdv.getDate())
                 .statut(StatutVisite.PLANIFIE)
                 .agent(agent)
                 .build();
