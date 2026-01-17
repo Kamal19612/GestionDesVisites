@@ -7,12 +7,14 @@ import toast from 'react-hot-toast';
 export default function UserManagement() {
   const qc = useQueryClient();
 
-  const { data: users = [], isLoading, isError } = useQuery({ 
+  const { data: rawUsers = [], isLoading, isError } = useQuery({ 
     queryKey: ['users'], 
     queryFn: () => userService.getUsers(),
     staleTime: 0,
     refetchInterval: 30000,
   });
+
+  const users = Array.isArray(rawUsers) ? rawUsers : (rawUsers?.content || []);
 
   const deleteMutation = useMutation({
     mutationFn: (id) => userService.deleteUser(id),

@@ -28,19 +28,21 @@ export default function RecordVisitWithList() {
   const queryClient = useQueryClient();
 
   // Fetch today's visits
-  const { data: visitsToday = [], isLoading: visitsLoading, refetch: refetchVisits } = useQuery({
+  const { data: rawVisits = [], isLoading: visitsLoading, refetch: refetchVisits } = useQuery({
     queryKey: ['visits', 'today'],
     queryFn: () => visitService.getVisitsToday(),
     staleTime: 0,
     refetchInterval: 30000,
   });
+  const visitsToday = Array.isArray(rawVisits) ? rawVisits : (rawVisits?.content || []);
 
-  const { data: todayAppointments = [] } = useQuery({
+  const { data: rawAppointments = [] } = useQuery({
     queryKey: ['appointments', 'today'],
     queryFn: () => appointmentService.getTodayAppointments(),
     staleTime: 0,
     refetchInterval: 30000,
   });
+  const todayAppointments = Array.isArray(rawAppointments) ? rawAppointments : (rawAppointments?.content || []);
 
   const { data: users = [] } = useQuery({
     queryKey: ['users'],

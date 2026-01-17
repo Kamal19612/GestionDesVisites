@@ -31,6 +31,11 @@ public class SecretaireController {
         return ResponseEntity.ok(rendezVousService.getRendezVousEnAttente());
     }
 
+    @GetMapping("/rendezvous/calendrier")
+    public ResponseEntity<List<RendezVousDto>> getCalendrierRendezVous() {
+        return ResponseEntity.ok(rendezVousService.getAllRendezVous());
+    }
+
     @PutMapping("/rendezvous/{id}/valider")
     public ResponseEntity<RendezVousDto> validerRendezVous(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -45,5 +50,25 @@ public class SecretaireController {
         Users secretaire = userService.findByEmail(auth.getName()).orElseThrow(() -> new RuntimeException("Secrétaire non trouvée"));
 
         return ResponseEntity.ok(rendezVousService.refuserRendezVous(id, secretaire));
+    }
+
+    @GetMapping("/rendezvous/{id}")
+    public ResponseEntity<RendezVousDto> getRendezVous(@PathVariable Long id) {
+        return ResponseEntity.ok(rendezVousService.getRendezVousById(id));
+    }
+
+    @GetMapping("/visiteurs")
+    public ResponseEntity<List<com.tech.visit_management.dto.UserDto>> getVisiteurs() {
+        return ResponseEntity.ok(userService.findAllVisiteurs());
+    }
+
+    @GetMapping("/employes")
+    public ResponseEntity<List<com.tech.visit_management.dto.UserDto>> getEmployes() {
+        return ResponseEntity.ok(userService.findAllEmployes());
+    }
+
+    @GetMapping("/rendezvous/aujourdhui")
+    public ResponseEntity<List<RendezVousDto>> getRendezVousAujourdhui() {
+        return ResponseEntity.ok(rendezVousService.getTousLesRendezVousAujourdhui());
     }
 }

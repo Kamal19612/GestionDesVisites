@@ -6,10 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tech.visit_management.dto.UserDto;
 import com.tech.visit_management.entity.Users;
-import com.tech.visit_management.entity.Visiteurs;
 import com.tech.visit_management.enums.Role;
 import com.tech.visit_management.mapper.UserMapper;
-import com.tech.visit_management.repository.VisiteursRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
     private final UserService userService;
-    private final VisiteursRepository visiteursRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -29,16 +26,8 @@ public class AuthService {
         // Encoder le mot de passe avant création
         userDto.setMotDePasse(passwordEncoder.encode(userDto.getMotDePasse()));
 
-        // Création de l'utilisateur (UserService gère la validation et sauvegarde)
-        Users user = userService.createUser(userDto, Role.VISITEUR); // Role creator autogénéré ou null si public
-
-        // Création du profil Visiteur associé
-        Visiteurs visiteur = Visiteurs.builder()
-                .user(user)
-                // .type("EXTERNE") // Par défaut
-                .build();
-
-        visiteursRepository.save(visiteur);
+        // Création de l'utilisateur (UserService gère maintenant la création automatique du profil Visiteurs)
+        Users user = userService.createUser(userDto, Role.VISITEUR);
 
         return userMapper.toDto(user);
     }

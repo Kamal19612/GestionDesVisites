@@ -7,6 +7,11 @@ const secretaireService = {
     return res.data;
   },
 
+  getCalendarAppointments: async () => {
+    const res = await api.get('/secretaire/rendezvous/calendrier');
+    return res.data;
+  },
+
   // Get appointment by id (for secretary view)
   getAppointmentById: async (id) => {
     // Assuming this endpoint exists or will exist
@@ -30,19 +35,19 @@ const secretaireService = {
 
   // Get today's visits (sourced from appointments)
   getVisitsToday: async () => {
-    const res = await api.get('/employe/rendezvous/aujourdhui');
+    const res = await api.get('/secretaire/rendezvous/aujourdhui');
     return res.data;
   },
 
   // Get all visitors for directory
   getVisitors: async () => {
-    const res = await api.get('/visiteur'); // Placeholder
+    const res = await api.get('/secretaire/visiteurs');
     return res.data;
   },
 
   // Get all employees for assignment
   getEmployees: async () => {
-    const res = await api.get('/employe'); // Placeholder
+    const res = await api.get('/secretaire/employes');
     return res.data;
   },
 

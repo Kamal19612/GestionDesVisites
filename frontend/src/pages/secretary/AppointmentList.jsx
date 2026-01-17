@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import appointmentService from '../../services/appointmentService';
+import secretaireService from '../../services/secretaireService';
 import toast from 'react-hot-toast';
 import PageHeader from '../../components/ui/PageHeader';
 import DataTable from '../../components/ui/DataTable';
@@ -13,12 +14,14 @@ export default function AppointmentList() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  const { data: appointments = [], isLoading, isError, error } = useQuery({
+  const { data: rawAppointments = [], isLoading, isError, error } = useQuery({
     queryKey: ['secretary', 'appointments'],
-    queryFn: appointmentService.getAllAppointments,
+    queryFn: secretaireService.getPendingAppointments,
     staleTime: 0,
     refetchInterval: 30000,
   });
+
+  const appointments = Array.isArray(rawAppointments) ? rawAppointments : (rawAppointments?.content || []);
 
   const updateMutation = useMutation({
     mutationFn: ({ id, action }) => {

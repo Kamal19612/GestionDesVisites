@@ -37,6 +37,11 @@ public class AgentController {
         return ResponseEntity.ok(rendezVousService.createRendezVousDirect(rdvDto, agent));
     }
 
+    @org.springframework.web.bind.annotation.GetMapping("/visiteurs/search")
+    public ResponseEntity<java.util.List<com.tech.visit_management.dto.VisiteurProfileDto>> searchVisiteurs(@org.springframework.web.bind.annotation.RequestParam("q") String query) {
+        return ResponseEntity.ok(userService.searchVisiteurs(query));
+    }
+
     @PostMapping("/visites/{id}/arrivee")
     public ResponseEntity<VisiteDto> enregistrerArrivee(@PathVariable Long id) { // id RendezVous ou id Visite ? Supposons ID RendezVous pour démarrer
         // Note: VisiteService demarrerVisite prend un ID de rendez-vous
@@ -46,5 +51,29 @@ public class AgentController {
     @PostMapping("/visites/{id}/sortie")
     public ResponseEntity<VisiteDto> enregistrerSortie(@PathVariable Long id) { // ID Visite ici
         return ResponseEntity.ok(visiteMapper.toDto(visiteService.enregistrerSortie(id)));
+    }
+
+    @org.springframework.web.bind.annotation.GetMapping("/visites/actives")
+    public ResponseEntity<java.util.List<VisiteDto>> getVisitesActives() {
+        return ResponseEntity.ok(visiteService.getVisitesActives().stream()
+                .map(visiteMapper::toDto)
+                .toList());
+    }
+
+    @org.springframework.web.bind.annotation.GetMapping("/visites/{id}")
+    public ResponseEntity<VisiteDto> getVisite(@PathVariable Long id) {
+        return ResponseEntity.ok(visiteMapper.toDto(visiteService.getVisiteEntityById(id)));
+    }
+
+    @org.springframework.web.bind.annotation.GetMapping("/visites/historique")
+    public ResponseEntity<java.util.List<VisiteDto>> getHistoriqueVisites() {
+        return ResponseEntity.ok(visiteService.getAllVisitesHistorique().stream()
+                .map(visiteMapper::toDto)
+                .toList());
+    }
+
+    @org.springframework.web.bind.annotation.GetMapping("/rendezvous/aujourdhui")
+    public ResponseEntity<java.util.List<RendezVousDto>> getRendezVousAujourdhui() {
+        return ResponseEntity.ok(rendezVousService.getTousLesRendezVousAujourdhui());
     }
 }

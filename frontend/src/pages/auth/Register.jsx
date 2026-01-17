@@ -26,12 +26,12 @@ export default function Register() {
 
   const mutation = useMutation({
     mutationFn: (data) => authService.register({ 
-      firstName: data.firstName, 
-      lastName: data.lastName, 
+      prenom: data.firstName, 
+      nom: data.lastName, 
       email: data.email, 
-      whatsapp: data.whatsapp || null,
-      password: data.password,
-      confirmPassword: data.confirm
+      telephone: data.whatsapp || null,
+      motDePasse: data.password
+      // confirmPassword removed as backend doesn't expect it
     }),
     onSuccess: (res) => {
       setServerError('')

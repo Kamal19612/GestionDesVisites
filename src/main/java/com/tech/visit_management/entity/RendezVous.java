@@ -1,17 +1,32 @@
 package com.tech.visit_management.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import com.tech.visit_management.enums.StatutRendezVous;
+import com.tech.visit_management.enums.TypeRendezVous;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import com.tech.visit_management.enums.TypeRendezVous;
-import com.tech.visit_management.enums.StatutRendezVous;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.LocalDateTime;
 
 /**
  * Entité représentant une demande de rendez-vous.
@@ -40,6 +55,13 @@ public class RendezVous {
     private Visiteurs visiteur;
 
     /**
+     * L'employé qui reçoit le visiteur.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employe_id")
+    private Users employe;
+
+    /**
      * Date prévue du rendez-vous.
      */
     @Column(nullable = false)
@@ -55,6 +77,16 @@ public class RendezVous {
      * Motif du rendez-vous.
      */
     private String motif;
+
+    /**
+     * Nom de la personne à rencontrer.
+     */
+    private String personneARencontrer;
+
+    /**
+     * Département de la personne à rencontrer.
+     */
+    private String departement;
 
     /**
      * Type de rendez-vous (DIRECT, PLANIFIE).

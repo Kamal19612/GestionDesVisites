@@ -18,7 +18,8 @@ public class UserMapper {
                 .prenom(user.getPrenom())
                 .email(user.getEmail())
                 .role(user.getRole())
-                .actif(user.isActif())
+                .actif(user.isActif()) // Autoboxing to Boolean works fine
+                .telephone(user.getTelephone())
                 .build();
     }
 
@@ -33,7 +34,8 @@ public class UserMapper {
                 .email(dto.getEmail())
                 .motDePasse(dto.getMotDePasse())
                 .role(dto.getRole())
-                .actif(dto.isActif())
+                .actif(Boolean.TRUE.equals(dto.getActif())) // Default to false if null, or use logic to default to true
+                .telephone(dto.getTelephone())
                 .build();
     }
 }

@@ -28,4 +28,29 @@ public class EmployeController {
                 .map(rendezVousMapper::toDto)
                 .toList());
     }
+
+    @GetMapping("/rendezvous/a-venir")
+    public ResponseEntity<List<RendezVousDto>> getRendezVousAVenir() {
+        return ResponseEntity.ok(rendezVousService.getRendezVousAVenirPourEmploye()
+                .stream()
+                .map(rendezVousMapper::toDto)
+                .toList());
+    }
+
+    @GetMapping("/rendezvous/{id}")
+    public ResponseEntity<RendezVousDto> getRendezVous(@org.springframework.web.bind.annotation.PathVariable Long id) {
+        return ResponseEntity.ok(rendezVousService.getRendezVousById(id));
+    }
+
+    @GetMapping("/rendezvous/historique")
+    public ResponseEntity<List<RendezVousDto>> getHistorique() {
+        return ResponseEntity.ok(rendezVousService.getRendezVousHistoriquePourEmploye().stream()
+                .map(rendezVousMapper::toDto)
+                .toList());
+    }
+
+    @GetMapping("/statistiques")
+    public ResponseEntity<?> getMesStatistiques() {
+        return ResponseEntity.ok(rendezVousService.getStatistiquesEmploye());
+    }
 }

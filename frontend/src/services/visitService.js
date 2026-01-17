@@ -13,18 +13,17 @@ const visitService = {
     return response.data
   },
 
-  // Get visits for today
+  // Get visits for today (Appointment lists for agent dashboard)
   getVisitsToday: async () => {
-    const response = await api.get('/employe/rendezvous/aujourdhui')
+    const response = await api.get('/agent/rendezvous/aujourdhui')
     return response.data
   },
 
   // Get active visits (currently in progress)
+  // Get active visits (currently in progress)
   getActiveVisits: async () => {
-    // Fallback: use today's appointments as a proxy for active visits since /agent/visites/active doesn't exist
-    const response = await api.get('/employe/rendezvous/aujourdhui')
-    // Filter locally if needed, for now return all valid appointments for today
-    return response.data
+    const response = await api.get('/agent/visites/actives');
+    return response.data;
   },
 
   // Update visit - record departure time
@@ -42,25 +41,19 @@ const visitService = {
 
   // Get visit by ID
   getVisitById: async (visitId) => {
-    // Fallback: endpoint missing, return null or throw. 
-    // Ideally we should use what we have in the list.
-    console.warn('getVisitById not implemented on backend')
-    return null;
+    const response = await api.get(`/agent/visites/${visitId}`);
+    return response.data;
   },
 
   // Get all visits (History)
   getAllVisits: async () => {
-    // Fallback: use today's appointments or return empty list
-    console.warn('getAllVisits history not implemented on backend')
-    return [] 
+    const response = await api.get('/agent/visites/historique');
+    return response.data;
   },
 
-  searchVisitor: async (phone, email) => {
-    const params = new URLSearchParams()
-    if (phone) params.append('phone', phone)
-    if (email) params.append('email', email)
-    const response = await api.get(`/visiteur/search?${params.toString()}`)
-    return response.data
+  searchVisitor: async (query) => {
+    const response = await api.get(`/visiteur/search?q=${query}`);
+    return response.data;
   }
 }
 

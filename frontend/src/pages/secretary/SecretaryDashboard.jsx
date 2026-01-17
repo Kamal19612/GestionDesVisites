@@ -25,6 +25,15 @@ export default function SecretaryDashboard() {
       iconBg: "bg-vp-mint/20",
       textColor: "text-vp-mint"
     },
+    {
+      title: "Calendrier Global",
+      desc: "Vue d'ensemble des plannings (Mois/Semaine)",
+      link: "/secretary/calendar",
+      icon: "📅",
+      color: "from-purple-500/20 to-purple-500/5",
+      iconBg: "bg-purple-100",
+      textColor: "text-purple-600"
+    },
   ];
 
   return (

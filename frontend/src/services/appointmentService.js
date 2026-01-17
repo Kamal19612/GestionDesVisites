@@ -20,16 +20,17 @@ const appointmentService = {
     return response.data;
   },
 
-  // Get all appointments (admin use) - NOT IMPLEMENTED IN BACKEND YET
+  // Get all appointments (admin use) - STUBBED
+  // Get all appointments (admin use)
   getAllAppointments: async () => {
-    // Backend lacks /admin/rendezvous endpoint. Returning empty list to prevent crash.
-    console.warn('getAllAppointments not implemented on backend');
-    return []; 
+    // Admin endpoint
+    const response = await api.get('/secretaire/rendezvous/calendrier'); // Or Admin equivalent if exists, Secretaire has all.
+    return response.data;
   },
 
   getAppointmentById: async (id) => {
-    const response = await api.get(`/visiteur/rendezvous/${id}`); // Assuming visitor can view their own
-    return response.data;
+     const response = await api.get(`/visiteur/rendezvous/${id}`);
+     return response.data;
   },
 
   updateAppointment: async (id, updatedData) => {
@@ -51,6 +52,12 @@ const appointmentService = {
   // Get today's appointments (for agent/secretary dashboard)
   getTodayAppointments: async () => {
     const response = await api.get('/employe/rendezvous/aujourdhui');
+    return response.data;
+  },
+
+  // Get upcoming appointments (for employee)
+  getUpcomingAppointments: async () => {
+    const response = await api.get('/employe/rendezvous/a-venir');
     return response.data;
   },
 

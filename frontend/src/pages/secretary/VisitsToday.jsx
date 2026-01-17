@@ -3,12 +3,18 @@ import { useQuery } from '@tanstack/react-query';
 import secretaireService from '../../services/secretaireService';
 
 export default function VisitsToday() {
-  const { data: visits = [], isLoading, isError, error } = useQuery({
+  const { data: rawVisits = [], isLoading, isError, error } = useQuery({
     queryKey: ['visitsToday'],
     queryFn: () => secretaireService.getVisitsToday(),
     staleTime: 0,
     refetchInterval: 30000,
   });
+
+  const visits = (Array.isArray(rawVisits) ? rawVisits : (rawVisits?.content || [])).map(v => ({
+    ...v,
+    time: v.time || v.HEntree || v.heure,
+    status: v.status || v.statut
+  }));
 
   const getStatusBadge = (status) => {
     switch (status) {

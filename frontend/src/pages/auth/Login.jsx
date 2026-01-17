@@ -51,8 +51,8 @@ export default function Login() {
       const role = userObj?.role?.name || userObj?.role || null
       if (role === 'ADMIN') navigate('/admin/dashboard')
       else if (role === 'SECRETAIRE') navigate('/secretary/dashboard')
-      else if (role === 'AGENT_SECURITE') navigate('/agent/dashboard')
-      else if (role === 'EMPLOYEUR') navigate('/employee/dashboard')
+      else if (role === 'AGENT') navigate('/agent/dashboard')
+      else if (role === 'EMPLOYE') navigate('/employee/dashboard')
       else navigate('/visitor')
     },
     onError: (err) => {

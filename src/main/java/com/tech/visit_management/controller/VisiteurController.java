@@ -38,4 +38,44 @@ public class VisiteurController {
     public ResponseEntity<List<RendezVousDto>> listerMesRendezVous() {
         return ResponseEntity.ok(rendezVousService.getRendezVousPourVisiteurConnecte());
     }
+
+    @GetMapping("/rendezvous/{id}")
+    public ResponseEntity<RendezVousDto> getRendezVous(@org.springframework.web.bind.annotation.PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users user = userService.findByEmail(auth.getName()).orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        return ResponseEntity.ok(rendezVousService.getRendezVousById(id, user));
+    }
+
+    @org.springframework.web.bind.annotation.PutMapping("/rendezvous/{id}")
+    public ResponseEntity<RendezVousDto> modifierRendezVous(@org.springframework.web.bind.annotation.PathVariable Long id, @RequestBody RendezVousDto rdvDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users user = userService.findByEmail(auth.getName()).orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        return ResponseEntity.ok(rendezVousService.updateRendezVous(id, rdvDto, user));
+    }
+
+    @org.springframework.web.bind.annotation.DeleteMapping("/rendezvous/{id}")
+    public ResponseEntity<Void> supprimerRendezVous(@org.springframework.web.bind.annotation.PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users user = userService.findByEmail(auth.getName()).orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        rendezVousService.deleteRendezVous(id, user);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<com.tech.visit_management.dto.VisiteurProfileDto> getProfile() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(userService.getVisiteurProfile(auth.getName()));
+    }
+
+    @org.springframework.web.bind.annotation.PutMapping("/profile")
+    public ResponseEntity<com.tech.visit_management.dto.VisiteurProfileDto> updateProfile(@RequestBody com.tech.visit_management.dto.VisiteurProfileDto profileDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(userService.updateVisiteurProfile(auth.getName(), profileDto));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<com.tech.visit_management.dto.VisiteurProfileDto>> searchVisiteurs(@org.springframework.web.bind.annotation.RequestParam("q") String query) {
+        // Idéalement sécurisé pour AGENT/SECRETAIRE/ADMIN
+        return ResponseEntity.ok(userService.searchVisiteurs(query));
+    }
 }

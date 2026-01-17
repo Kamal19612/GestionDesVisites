@@ -9,10 +9,12 @@ import VerifyEmail from './pages/auth/VerifyEmail';
 import App from './App';
 import VisitorDashboard from './pages/visitor/VisitorDashboard';
 import AppointmentRequest from './pages/visitor/AppointmentRequest';
+import AccessPass from './pages/visitor/AccessPass';
 import SecretaryDashboard from './pages/secretary/SecretaryDashboard';
 import AppointmentList from './pages/secretary/AppointmentList';
 import AppointmentDetails from './pages/secretary/AppointmentDetails';
 import VisitsToday from './pages/secretary/VisitsToday';
+import GlobalCalendar from './pages/secretary/GlobalCalendar';
 import SecretarySettings from './pages/secretary/SecretarySettings';
 import AgentDashboard from './pages/agent/AgentDashboard';
 import OnsiteAppointment from './pages/agent/OnsiteAppointment';
@@ -95,6 +97,7 @@ export default function AppRoutes() {
               <Route path="/visitor" element={<VisitorDashboard />} />
               <Route path="/visitor/dashboard" element={<VisitorDashboard />} />
               <Route path="/visitor/appointments/new" element={<AppointmentRequest />} />
+              <Route path="/visitor/pass/:id" element={<AccessPass />} />
             </Route>
 
             {/* Protected Routes for Secretary */}
@@ -103,11 +106,12 @@ export default function AppRoutes() {
               <Route path="/secretary/appointments" element={<AppointmentList />} />
               <Route path="/secretary/appointments/:id" element={<AppointmentDetails />} />
               <Route path="/secretary/visits/today" element={<VisitsToday />} />
+              <Route path="/secretary/calendar" element={<GlobalCalendar />} />
               <Route path="/secretary/settings" element={<SecretarySettings />} />
             </Route>
 
             {/* Protected Routes for Security Agent */}
-            <Route element={<ProtectedRoute allowedRoles={['AGENT_SECURITE']} />}>
+            <Route element={<ProtectedRoute allowedRoles={['AGENT']} />}>
               <Route path="/agent/dashboard" element={<AgentDashboard />} />
               <Route path="/agent/appointments/new-on-site" element={<OnsiteAppointment />} />
               <Route path="/agent/appointments/validate" element={<AppointmentValidation />} />
@@ -117,7 +121,7 @@ export default function AppRoutes() {
             </Route>
 
             {/* Protected Routes for Employee */}
-            <Route element={<ProtectedRoute allowedRoles={['EMPLOYEUR']} />}>
+            <Route element={<ProtectedRoute allowedRoles={['EMPLOYE']} />}>
               <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
               <Route path="/employee/schedule" element={<EmployeeSchedule />} />
               <Route path="/employee/appointments/:id" element={<EmployeeAppointmentDetail />} />

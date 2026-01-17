@@ -15,7 +15,7 @@ export default function AgentDashboard() {
   // Today's appointments
   const { data: todayAppointments = [], isLoading: aptsLoading } = useQuery({
     queryKey: ['appointments', 'today'],
-    queryFn: () => appointmentService.getTodayAppointments(),
+    queryFn: () => visitService.getVisitsToday(), // Used Agent specific endpoint
     staleTime: 0,
     refetchInterval: 30000,
   })
@@ -23,7 +23,7 @@ export default function AgentDashboard() {
   // Today's visits
   const { data: visitsToday = [], isLoading: visitsLoading, refetch: refetchVisits } = useQuery({
     queryKey: ['visits', 'today'],
-    queryFn: () => visitService.getVisitsToday(),
+    queryFn: () => visitService.getActiveVisits(),
     staleTime: 0,
     refetchInterval: 30000,
   })

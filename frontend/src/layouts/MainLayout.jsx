@@ -17,9 +17,9 @@ export default function MainLayout({ children }) {
         return '/visitor/dashboard';
       case 'SECRETAIRE':
         return '/secretary/dashboard';
-      case 'AGENT_SECURITE':
+      case 'AGENT':
         return '/agent/dashboard';
-      case 'EMPLOYEUR':
+      case 'EMPLOYE':
         return '/employee/dashboard';
       case 'ADMIN':
         return '/admin/dashboard';
@@ -64,22 +64,22 @@ export default function MainLayout({ children }) {
                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 ml-4 mb-2">Navigation Principale</p>
                <ul className="space-y-2">
                  {/* Shared Dashboard Link for all roles (dynamic destination) */}
-                 <li>
-                    <Link 
-                      to={getHomeRoute()} 
-                      className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
-                        useLocation().pathname.includes('dashboard') 
-                        ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
-                        : 'hover:bg-white hover:shadow-lg text-slate-500'
-                      }`}
-                    >
-                      <span className={`text-xl ${useLocation().pathname.includes('dashboard') ? 'scale-110' : 'group-hover:scale-110'}`}>📊</span>
-                      <div className="flex flex-col">
-                        <span className={`text-sm font-black ${useLocation().pathname.includes('dashboard') ? 'text-white' : 'text-vp-navy'}`}>Dashboard</span>
-                        <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('dashboard') ? 'text-white/40' : 'text-slate-400'}`}>Vue d'ensemble</span>
-                      </div>
-                    </Link>
-                 </li>
+                  <li>
+                     <Link 
+                       to={getHomeRoute()} 
+                       className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                         useLocation().pathname.includes('dashboard') 
+                         ? 'font-bold text-vp-navy bg-slate-50' 
+                         : 'hover:bg-white hover:shadow-lg text-slate-500'
+                       }`}
+                     >
+                       <span className={`text-xl ${useLocation().pathname.includes('dashboard') ? 'scale-110' : 'group-hover:scale-110'}`}>📊</span>
+                       <div className="flex flex-col">
+                         <span className="text-sm">Dashboard</span>
+                         <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Vue d'ensemble</span>
+                       </div>
+                     </Link>
+                  </li>
 
                  {user && user.role === 'VISITEUR' && (
                    <li>
@@ -87,14 +87,14 @@ export default function MainLayout({ children }) {
                        to="/visitor/appointments/new" 
                        className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
                          useLocation().pathname.includes('/appointments/new') 
-                         ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                         ? 'font-bold text-vp-navy bg-slate-50' 
                          : 'hover:bg-white hover:shadow-lg text-slate-500'
                        }`}
                      >
                        <span className="text-xl">➕</span>
                        <div className="flex flex-col">
-                         <span className={`text-sm font-black ${useLocation().pathname.includes('/appointments/new') ? 'text-white' : 'text-vp-navy'}`}>Planifier</span>
-                         <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/appointments/new') ? 'text-white/40' : 'text-slate-400'}`}>Nouveau RDV</span>
+                         <span className="text-sm">Planifier</span>
+                         <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Nouveau RDV</span>
                        </div>
                      </Link>
                    </li>
@@ -106,34 +106,34 @@ export default function MainLayout({ children }) {
                        to="/secretary/appointments" 
                        className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
                          useLocation().pathname.includes('/secretary/appointments') 
-                         ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                         ? 'font-bold text-vp-navy bg-slate-50' 
                          : 'hover:bg-white hover:shadow-lg text-slate-500'
                        }`}
                      >
                        <span className="text-xl">🗓️</span>
                        <div className="flex flex-col">
-                         <span className={`text-sm font-black ${useLocation().pathname.includes('/secretary/appointments') ? 'text-white' : 'text-vp-navy'}`}>Agenda</span>
-                         <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/secretary/appointments') ? 'text-white/40' : 'text-slate-400'}`}>Modération</span>
+                         <span className="text-sm">Agenda</span>
+                         <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Modération</span>
                        </div>
                      </Link>
                    </li>
                  )}
 
-                 {user && user.role === 'AGENT_SECURITE' && (
+                 {user && user.role === 'AGENT' && (
                    <>
                      <li>
                        <Link 
                          to="/agent/visit/record" 
                          className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
                            useLocation().pathname.includes('/agent/visit/record') 
-                           ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                           ? 'font-bold text-vp-navy bg-slate-50' 
                            : 'hover:bg-white hover:shadow-lg text-slate-500'
                          }`}
                        >
                          <span className="text-xl">🚪</span>
                          <div className="flex flex-col">
-                           <span className={`text-sm font-black ${useLocation().pathname.includes('/agent/visit/record') ? 'text-white' : 'text-vp-navy'}`}>Entrées</span>
-                           <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/agent/visit/record') ? 'text-white/40' : 'text-slate-400'}`}>Check-in</span>
+                           <span className="text-sm">Entrées</span>
+                           <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Check-in</span>
                          </div>
                        </Link>
                      </li>
@@ -142,7 +142,7 @@ export default function MainLayout({ children }) {
                          to="/agent/current-visitors" 
                          className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
                            useLocation().pathname.includes('/agent/current-visitors') 
-                           ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                           ? 'font-bold text-vp-navy bg-slate-50' 
                            : 'hover:bg-white hover:shadow-lg text-slate-500'
                          }`}
                        >
@@ -151,8 +151,8 @@ export default function MainLayout({ children }) {
                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-vp-mint rounded-full animate-ping"></span>
                          </span>
                          <div className="flex flex-col">
-                           <span className={`text-sm font-black ${useLocation().pathname.includes('/agent/current-visitors') ? 'text-white' : 'text-vp-navy'}`}>Présents</span>
-                           <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/agent/current-visitors') ? 'text-white/40' : 'text-slate-400'}`}>Sur site</span>
+                           <span className="text-sm">Présents</span>
+                           <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Sur site</span>
                          </div>
                        </Link>
                      </li>
@@ -162,14 +162,14 @@ export default function MainLayout({ children }) {
                           to="/agent/visit/history" 
                           className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
                             useLocation().pathname.includes('/agent/visit/history') 
-                            ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                            ? 'font-bold text-vp-navy bg-slate-50' 
                             : 'hover:bg-white hover:shadow-lg text-slate-500'
                           }`}
                         >
                           <span className="text-xl">📜</span>
                           <div className="flex flex-col">
-                            <span className={`text-sm font-black ${useLocation().pathname.includes('/agent/visit/history') ? 'text-white' : 'text-vp-navy'}`}>Historique</span>
-                            <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/agent/visit/history') ? 'text-white/40' : 'text-slate-400'}`}>Régistre</span>
+                            <span className="text-sm">Historique</span>
+                            <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Régistre</span>
                           </div>
                         </Link>
                      </li>
@@ -177,22 +177,40 @@ export default function MainLayout({ children }) {
                  )}
 
                  {user && user.role === 'ADMIN' && (
+                   <>
                    <li>
                      <Link 
                        to="/admin/dashboard" 
                        className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
-                         useLocation().pathname.includes('/admin') 
-                         ? 'bg-vp-navy text-white shadow-xl shadow-vp-navy/20' 
+                         useLocation().pathname === '/admin/dashboard'
+                         ? 'font-bold text-vp-navy bg-slate-50' 
                          : 'hover:bg-white hover:shadow-lg text-slate-500'
                        }`}
                      >
-                       <span className="text-xl">⚙️</span>
+                       <span className={`text-xl ${useLocation().pathname === '/admin/dashboard' ? 'scale-110' : 'group-hover:scale-110'}`}>📊</span>
                        <div className="flex flex-col">
-                         <span className={`text-sm font-black ${useLocation().pathname.includes('/admin') ? 'text-white' : 'text-vp-navy'}`}>Gestion</span>
-                         <span className={`text-[9px] font-bold uppercase tracking-tighter ${useLocation().pathname.includes('/admin') ? 'text-white/40' : 'text-slate-400'}`}>Paramètres</span>
+                         <span className="text-sm">Dashboard</span>
+                         <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Vue globale</span>
                        </div>
                      </Link>
                    </li>
+                   <li>
+                     <Link 
+                       to="/admin/settings" 
+                       className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                         useLocation().pathname.includes('/admin/settings') 
+                         ? 'font-bold text-vp-navy bg-slate-50' 
+                         : 'hover:bg-white hover:shadow-lg text-slate-500'
+                       }`}
+                     >
+                       <span className={`text-xl ${useLocation().pathname.includes('/admin/settings') ? 'scale-110' : 'group-hover:scale-110'}`}>⚙️</span>
+                       <div className="flex flex-col">
+                         <span className="text-sm">Préférences</span>
+                         <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Système</span>
+                       </div>
+                     </Link>
+                   </li>
+                   </>
                  )}
                </ul>
             </nav>

@@ -2,9 +2,9 @@ import api from './api'
 
 const statisticsService = {
   getOverview: async () => {
-    // use existing endpoint that returns saved statistics
-    const res = await api.get('/v1/statistiques')
-    return res.data
+    // Admin stats endpoint
+    const res = await api.get('/admin/stats');
+    return res.data;
   },
   getHistory: async (params) => {
     const res = await api.get('/v1/statistiques/detailed-reports', { params })

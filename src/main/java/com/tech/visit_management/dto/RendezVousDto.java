@@ -23,6 +23,8 @@ public class RendezVousDto {
     private LocalDate date;
     private LocalTime heure;
     private String motif;
+    private String personneARencontrer;
+    private String departement;
     private TypeRendezVous type;
     private StatutRendezVous statut;
     private String code;

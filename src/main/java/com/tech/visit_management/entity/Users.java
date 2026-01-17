@@ -62,6 +62,11 @@ public class Users {
     private String email;
 
     /**
+     * Numéro de téléphone de l'utilisateur.
+     */
+    private String telephone;
+
+    /**
      * Mot de passe de l'utilisateur.
      */
     @Column(nullable = false)

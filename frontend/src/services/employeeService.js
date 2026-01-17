@@ -4,10 +4,13 @@ const employeeService = {
   /**
    * Get all appointments for the current employee
    */
+  /**
+   * Get all appointments for the current employee (History/Log)
+   */
   getAppointments: async (filters = {}) => {
     try {
-      // Use 'mine' so the backend returns appointments where the user is either visitor OR host (personneARencontrer)
-      const response = await api.get('/v1/rendezvous/mine', { params: filters });
+      // Mapping to history endpoint which returns list of past appointments
+      const response = await api.get('/employe/rendezvous/historique', { params: filters });
       return response.data;
     } catch (error) {
       console.error('Error fetching appointments:', error);
@@ -51,16 +54,11 @@ const employeeService = {
    */
   getStatistics: async () => {
     try {
-      const response = await api.get('/v1/rendezvous/statistics');
+      const response = await api.get('/employe/statistiques');
       return response.data;
     } catch (error) {
       console.error('Error fetching statistics:', error);
-      return {
-        total: 0,
-        pending: 0,
-        approved: 0,
-        rejected: 0,
-      };
+      return { total: 0, pending: 0, validated: 0 };
     }
   },
 
@@ -69,9 +67,7 @@ const employeeService = {
    */
   getUpcomingAppointments: async (days = 7) => {
     try {
-      const response = await api.get('/v1/rendezvous', {
-        params: { upcoming: true, days },
-      });
+      const response = await api.get('/employe/rendezvous/a-venir');
       return response.data;
     } catch (error) {
       console.error('Error fetching upcoming appointments:', error);

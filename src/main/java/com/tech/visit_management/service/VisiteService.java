@@ -90,4 +90,18 @@ public class VisiteService {
         );
         return visite;
     }
+
+    public java.util.List<Visites> getVisitesActives() {
+        return visitesRepository.findAll().stream()
+                .filter(v -> v.getStatut() == StatutVisite.EN_COURS || v.getHeureSortie() == null)
+                .toList();
+    }
+
+    public Visites getVisiteEntityById(Long id) {
+        return visitesRepository.findById(id).orElseThrow(() -> new RuntimeException("Visite non trouvée"));
+    }
+
+    public java.util.List<Visites> getAllVisitesHistorique() {
+        return visitesRepository.findAll();
+    }
 }

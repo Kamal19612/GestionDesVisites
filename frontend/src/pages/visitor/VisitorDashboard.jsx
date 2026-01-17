@@ -12,12 +12,14 @@ import appointmentService from '../../services/appointmentService';
 export default function VisitorDashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data: appointments = [], isLoading, error, refetch } = useQuery({
+  const { data: rawAppointments = [], isLoading, error, refetch } = useQuery({
     queryKey: ['appointments'],
     queryFn: appointmentService.getAppointments,
     staleTime: 0,
     refetchInterval: 30000,
   });
+
+  const appointments = Array.isArray(rawAppointments) ? rawAppointments : (rawAppointments?.content || []);
 
   const deleteMutation = useMutation({
     mutationFn: (id) => appointmentService.deleteAppointment(id),
@@ -85,7 +87,17 @@ export default function VisitorDashboard() {
       header: t('common.actions'),
       className: 'text-right',
       render: (row) => (
-        <div className="text-right">
+       <div className="text-right flex justify-end gap-2">
+           {/* Show Pass if Approved */}
+           {row.statut === 'APPROUVEE' && (
+             <Link 
+               to={`/visitor/pass/${row.id}`}
+               className="p-3 rounded-xl bg-vp-mint/10 text-vp-mint hover:bg-vp-mint hover:text-white transition-all"
+               title="Voir le Pass d'Accès"
+             >
+               🎫
+             </Link>
+           )}
            <button
              onClick={(e) => { e.stopPropagation(); handleDelete(row.id); }}
              className="p-3 rounded-xl text-rose-500 hover:bg-rose-50 transition-all"

@@ -6,12 +6,14 @@ import toast from 'react-hot-toast'
 export default function CurrentVisitors() {
   const queryClient = useQueryClient()
 
-  const { data: visitors = [], isLoading, isError, error } = useQuery({
+  const { data: rawVisitors = [], isLoading, isError, error } = useQuery({
     queryKey: ['visits', 'active'],
     queryFn: () => visitService.getActiveVisits(),
     staleTime: 0,
     refetchInterval: 15000, // Faster sync for active visitors
   })
+
+  const visitors = Array.isArray(rawVisitors) ? rawVisitors : (rawVisitors?.content || []);
 
   // state for immediate UI updates
   const [localVisitors, setLocalVisitors] = React.useState(visitors)
