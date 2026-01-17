@@ -17,7 +17,7 @@ export default function VisitHistory() {
 
   const { data: appointments = [], isLoading: aptsLoading } = useQuery({
     queryKey: ['appointments', 'approved'],
-    queryFn: () => appointmentService.getAppointments(), // Fetches all, we'll filter
+    queryFn: () => appointmentService.getAllAppointments(),
     staleTime: 60000,
   });
 

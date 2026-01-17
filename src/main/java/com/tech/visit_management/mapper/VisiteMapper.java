@@ -21,6 +21,10 @@ public class VisiteMapper {
                 .statut(visite.getStatut())
                 .agentId(visite.getAgent() != null ? visite.getAgent().getId() : null)
                 .agentNom(visite.getAgent() != null ? visite.getAgent().getNom() + " " + visite.getAgent().getPrenom() : "")
+                .visitorName(visite.getRendezVous() != null && visite.getRendezVous().getVisiteur() != null
+                        ? visite.getRendezVous().getVisiteur().getUser().getNom() + " " + visite.getRendezVous().getVisiteur().getUser().getPrenom() : "Visiteur")
+                .motif(visite.getRendezVous() != null ? visite.getRendezVous().getMotif() : "")
+                .departement(visite.getRendezVous() != null ? visite.getRendezVous().getDepartement() : "")
                 .build();
     }
 }

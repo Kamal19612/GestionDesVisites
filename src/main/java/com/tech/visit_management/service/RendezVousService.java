@@ -69,9 +69,9 @@ public class RendezVousService {
      * Valide un rendez-vous (par une secrétaire).
      */
     @Transactional
-    public RendezVousDto validerRendezVous(Long rdvId, Users secretaire) {
-        if (secretaire.getRole() != Role.SECRETAIRE) {
-            throw new AccessDeniedException("Seule une secrétaire peut valider un rendez-vous.");
+    public RendezVousDto validerRendezVous(Long rdvId, Users user) {
+        if (user.getRole() != Role.SECRETAIRE && user.getRole() != Role.ADMIN && user.getRole() != Role.AGENT) {
+            throw new AccessDeniedException("Vous n'avez pas les droits pour valider un rendez-vous.");
         }
 
         RendezVous rdv = rendezVousRepository.findById(rdvId)
@@ -102,9 +102,9 @@ public class RendezVousService {
      * Refuse un rendez-vous (par une secrétaire).
      */
     @Transactional
-    public RendezVousDto refuserRendezVous(Long rdvId, Users secretaire) {
-        if (secretaire.getRole() != Role.SECRETAIRE) {
-            throw new AccessDeniedException("Seule une secrétaire peut refuser un rendez-vous.");
+    public RendezVousDto refuserRendezVous(Long rdvId, Users user) {
+        if (user.getRole() != Role.SECRETAIRE && user.getRole() != Role.ADMIN && user.getRole() != Role.AGENT) {
+            throw new AccessDeniedException("Vous n'avez pas les droits pour refuser un rendez-vous.");
         }
 
         RendezVous rdv = rendezVousRepository.findById(rdvId)
@@ -325,5 +325,11 @@ public class RendezVousService {
                 && r.getDate().equals(LocalDate.now()))
                 .map(rendezVousMapper::toDto)
                 .toList();
+    }
+
+    public RendezVousDto getRendezVousByCode(String code) {
+        RendezVous rdv = rendezVousRepository.findByCode(code)
+                .orElseThrow(() -> new RuntimeException("Code invalide ou expiré : " + code));
+        return rendezVousMapper.toDto(rdv);
     }
 }

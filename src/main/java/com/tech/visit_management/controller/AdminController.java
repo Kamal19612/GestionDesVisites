@@ -26,6 +26,7 @@ public class AdminController {
     private final com.tech.visit_management.repository.UsersRepository usersRepository;
     private final com.tech.visit_management.repository.VisitesRepository visitesRepository;
     private final com.tech.visit_management.repository.RendezVousRepository rendezVousRepository;
+    private final com.tech.visit_management.mapper.VisiteMapper visiteMapper;
 
     @PostMapping("/users")
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
@@ -55,11 +56,17 @@ public class AdminController {
                 .count();
         long pending = rendezVousRepository.findByStatut(com.tech.visit_management.enums.StatutRendezVous.EN_ATTENTE).size();
 
+        java.util.List<com.tech.visit_management.dto.VisiteDto> recent = visitesRepository.findTop5ByOrderByDateDescHeureArriveeDesc()
+                .stream()
+                .map(visiteMapper::toDto)
+                .collect(java.util.stream.Collectors.toList());
+
         return ResponseEntity.ok(com.tech.visit_management.dto.AdminStatsDto.builder()
                 .totalUsers(totalUsers)
                 .activeVisits(activeVisits)
                 .totalVisitsToday(visitsToday)
                 .pendingAppointments(pending)
+                .recentActivity(recent)
                 .build());
     }
 

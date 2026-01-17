@@ -17,4 +17,6 @@ public interface RendezVousRepository extends JpaRepository<RendezVous, Long> {
     List<RendezVous> findByStatutAndDate(StatutRendezVous statut, LocalDate date);
 
     List<RendezVous> findByVisiteur_User_Email(String email);
+
+    java.util.Optional<RendezVous> findByCode(String code);
 }

@@ -76,4 +76,16 @@ public class AgentController {
     public ResponseEntity<java.util.List<RendezVousDto>> getRendezVousAujourdhui() {
         return ResponseEntity.ok(rendezVousService.getTousLesRendezVousAujourdhui());
     }
+
+    @org.springframework.web.bind.annotation.GetMapping("/rendezvous/search-by-code")
+    public ResponseEntity<RendezVousDto> searchRendezVousByCode(@org.springframework.web.bind.annotation.RequestParam("code") String code) {
+        return ResponseEntity.ok(rendezVousService.getRendezVousByCode(code));
+    }
+
+    @org.springframework.web.bind.annotation.GetMapping("/visites/aujourdhui")
+    public ResponseEntity<java.util.List<VisiteDto>> getVisitesAujourdhui() {
+        return ResponseEntity.ok(visiteService.getVisitesByDate(java.time.LocalDate.now()).stream()
+                .map(visiteMapper::toDto)
+                .toList());
+    }
 }

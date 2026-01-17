@@ -24,4 +24,7 @@ public class VisiteDto {
     private StatutVisite statut;
     private Long agentId;
     private String agentNom; // Pour affichage
+    private String visitorName;
+    private String motif;
+    private String departement;
 }

@@ -44,15 +44,27 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/v1/secretaire/**").hasRole("SECRETAIRE")
-                .requestMatchers("/api/v1/agent/**").hasRole("AGENT")
-                .requestMatchers("/api/v1/employe/**").hasRole("EMPLOYE")
+                .requestMatchers("/api/v1/secretaire/**").hasAnyRole("SECRETAIRE", "ADMIN", "AGENT")
+                .requestMatchers("/api/v1/agent/**").hasAnyRole("AGENT", "ADMIN")
+                .requestMatchers("/api/v1/employe/**").hasAnyRole("EMPLOYE", "ADMIN")
                 .requestMatchers("/api/v1/visiteur/**").hasRole("VISITEUR")
                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
+    }
+
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+        org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
+        configuration.setAllowedOrigins(java.util.List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(java.util.List.of("*"));
+        configuration.setAllowCredentials(true);
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean

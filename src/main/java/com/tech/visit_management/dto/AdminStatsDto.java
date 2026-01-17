@@ -11,4 +11,5 @@ public class AdminStatsDto {
     private long totalVisitsToday;
     private long activeVisits;
     private long pendingAppointments;
+    private java.util.List<VisiteDto> recentActivity;
 }

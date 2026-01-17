@@ -7,11 +7,15 @@ const statisticsService = {
     return res.data;
   },
   getHistory: async (params) => {
-    const res = await api.get('/v1/statistiques/detailed-reports', { params })
+    const res = await api.get('/statistiques/detailed-reports', { params })
     return res.data
   },
   getByDepartment: async () => {
-    const res = await api.get('/v1/statistiques/par-departement')
+    const res = await api.get('/statistiques/par-departement')
+    return res.data
+  },
+  getAverageDuration: async () => {
+    const res = await api.get('/statistiques/duree-moyenne')
     return res.data
   },
 }

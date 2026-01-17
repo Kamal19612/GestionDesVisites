@@ -60,5 +60,155 @@
       "approve_success": "Appointment approved",
       "reject_success": "Appointment rejected"
     }
+  },
+  "agent": {
+    "dashboard": {
+      "title": "Access Control",
+      "subtitle": "Real-time supervision of entries, exits, and site security.",
+      "actions": {
+        "entry": "New Entry",
+        "history": "Logbook",
+        "create_onsite": "Register Unplanned Visitor"
+      },
+      "stats": {
+        "appointments": { "label": "Appointments", "sub": "Scheduled Today" },
+        "pending": { "label": "Upcoming", "sub": "Awaiting Arrival" },
+        "onsite": { "label": "On Site", "sub": "Visitors Present" },
+        "completed": { "label": "Exits", "sub": "Visits Completed" }
+      }
+    },
+    "appointments": {
+        "title": "EXPECTED VISITORS",
+        "subtitle": "List of authorized persons",
+        "view_all": "View Full Schedule",
+        "sync": "Updating...",
+        "empty": "No visitors expected at the moment."
+    },
+    "visits": {
+        "title": "Visitors On Site",
+        "full_list": "Full Presence List",
+        "empty": "No visitors currently on site.",
+        "checkout": "Register Exit"
+    },
+    "validation": {
+      "title": "Appointment Validation",
+      "subtitle": "Approve or reject pending visit requests.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "cancel": "Cancel",
+      "confirm_reject": "Confirm Rejection",
+      "reject_reason": "Rejection Reason",
+      "reject_placeholder": "Please indicate the reason for refusal...",
+      "access_denied": {
+          "title": "Access Denied",
+          "message": "You do not have permission to access this validation page.",
+          "back": "Back to Dashboard"
+      },
+      "empty": "No pending requests for validation."
+    },
+    "onsite": {
+      "title": "New On-Site Appointment",
+      "subtitle": "Immediate appointment at the gate.",
+      "steps": {
+        "identity": "Visitor Identity",
+        "details": "Appointment Details"
+      },
+      "labels": {
+        "firstname": "First Name",
+        "lastname": "Last Name",
+        "phone": "Phone",
+        "host": "Host (Person to see)",
+        "motif": "Reason for visit"
+      },
+      "success": {
+        "title": "Appointment Registered",
+        "message": "Folder created successfully"
+      },
+      "submit": "Confirm Appointment"
+    },
+    "entry": {
+      "title": "Direct Entry Entry",
+      "subtitle": "Quick registration at the guard post",
+      "search": {
+        "placeholder": "Email, Phone...",
+        "code_placeholder": "Appt Code (8 chars)",
+        "button": "Search",
+        "by_code": "Check Code"
+      },
+      "sections": {
+        "identity": "Visitor Identity",
+        "doc": "Document & Contact",
+        "destination": "Destination",
+        "time": "Timestamp"
+      },
+      "labels": {
+        "doc_id": "Identity Document",
+        "target_dept": "Target Department",
+        "host_internal": "Internal Host (Employee)",
+        "now": "NOW"
+      },
+      "submit": "REGISTER VISITOR ENTRY",
+      "register": {
+        "title": "Daily Operational Register",
+        "subtitle": "Real-time movements",
+        "movements": "Movements",
+        "empty": "No movements today",
+        "checkout_btn": "Validate Exit"
+      },
+      "memos": {
+        "security_title": "Security Memo",
+        "security_text": "Everyone must present a valid ID. Badge scanning is mandatory for all external personnel.",
+        "protocol_title": "Security Protocol",
+        "protocol_text": "Any manual checkout permanently closes the visit session. For any subsequent modification, please contact the system administrator."
+      }
+    },
+    "history": {
+      "title": "Registry & Waiting",
+      "subtitle": "Synchronization of past flows and future visits.",
+      "tabs": {
+        "archives": "Archives",
+        "upcoming": "Upcoming"
+      },
+      "table": {
+        "time": "Time",
+        "visitor": "Visitor",
+        "goal": "Goal & Location",
+        "state": "State"
+      },
+      "status": {
+        "confirmed_identity": "Identity Confirmed",
+        "validated": "Validated",
+        "closed": "Closed",
+        "active": "Active"
+      }
+
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "GENERAL ADMINISTRATION",
+      "subtitle": "Centralized control of security, access, and performance.",
+      "action": "OPEN MODULE",
+      "cards": {
+        "stats": {
+          "title": "Analytics & Reports",
+          "desc": "Detailed dashboards on visitor flows, occupancy rates, and security metrics."
+        },
+        "users": {
+          "title": "Staff Management",
+          "desc": "Complete account administration (Agents, Secretaries, Employees) and access privilege management."
+        },
+        "settings": {
+          "title": "System Configuration",
+          "desc": "Global application settings, notification preferences, and maintenance policies."
+        }
+      },
+      "summary": {
+        "title": "System Activity Monitor",
+        "description": "Synthetic view of platform operational status and real-time performance indicators.",
+        "uptime": "VISITORS ON SITE",
+        "visits_today": "DAILY GLOBAL ACTIVITY"
+      }
+    }
   }
 }

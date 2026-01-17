@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import Input from '../../components/Form/Input'
 import appointmentService from '../../services/appointmentService'
 import toast from 'react-hot-toast'
 
 export default function OnsiteAppointment() {
+  const { t } = useTranslation()
   const { register, handleSubmit, formState: { errors } } = useForm()
   const navigate = useNavigate()
   const [showSuccess, setShowSuccess] = useState(false)
@@ -15,12 +17,12 @@ export default function OnsiteAppointment() {
     mutationFn: (data) => appointmentService.createOnsiteAppointment(data),
     onSuccess: () => {
       setShowSuccess(true)
-      toast.success('Rendez-vous créé avec succès')
+      toast.success(t('agent.onsite.success.title'))
       setTimeout(() => navigate('/agent/dashboard'), 2000)
     },
     onError: (err) => {
       console.error('Erreur Onsite:', err);
-      toast.error(err?.response?.data?.message || 'Erreur lors de la création')
+      toast.error(err?.response?.data?.message || t('common.error'))
     }
   })
 
@@ -53,8 +55,8 @@ export default function OnsiteAppointment() {
           ←
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-vp-navy">Nouveau RDV sur site</h1>
-          <p className="text-slate-500 font-medium tracking-wide text-sm">Prise de rendez-vous immédiate au poste.</p>
+          <h1 className="text-2xl font-bold text-vp-navy">{t('agent.onsite.title')}</h1>
+          <p className="text-slate-500 font-medium tracking-wide text-sm">{t('agent.onsite.subtitle')}</p>
         </div>
       </div>
 
@@ -64,24 +66,24 @@ export default function OnsiteAppointment() {
             {/* Step 1: Identity */}
             <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
               <span className="w-6 h-6 rounded-lg bg-vp-cyan/10 text-vp-cyan flex items-center justify-center text-[10px] font-black shadow-inner">01</span>
-              <h2 className="text-[10px] font-black uppercase tracking-widest text-vp-navy">Identité Visiteur</h2>
+              <h2 className="text-[10px] font-black uppercase tracking-widest text-vp-navy">{t('agent.onsite.steps.identity')}</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input 
-                label="Prénom" 
+                label={t('agent.onsite.labels.firstname')}
                 name="visitorFirstName" 
                 register={register}
-                options={{ required: 'Prénom requis' }}
+                options={{ required: t('common.required') }}
                 error={errors.visitorFirstName?.message}
                 placeholder="Ex: John"
                 className="rounded-xl"
               />
               <Input 
-                label="Nom" 
+                label={t('agent.onsite.labels.lastname')}
                 name="visitorLastName" 
                 register={register}
-                options={{ required: 'Nom requis' }}
+                options={{ required: t('common.required') }}
                 error={errors.visitorLastName?.message}
                 placeholder="Ex: Doe"
                 className="rounded-xl"
@@ -97,7 +99,7 @@ export default function OnsiteAppointment() {
                 className="rounded-xl"
               />
               <Input 
-                label="Téléphone" 
+                label={t('agent.onsite.labels.phone')}
                 name="visitorPhone" 
                 register={register}
                 placeholder="Ex: +212..."
@@ -110,23 +112,23 @@ export default function OnsiteAppointment() {
             {/* Step 2: Planning */}
             <div className="flex items-center gap-3 border-b border-slate-200 pb-3">
               <span className="w-6 h-6 rounded-lg bg-vp-mint/10 text-vp-mint flex items-center justify-center text-[10px] font-black shadow-inner">02</span>
-              <h2 className="text-[10px] font-black uppercase tracking-widest text-vp-navy">Détails du Rendez-vous</h2>
+              <h2 className="text-[10px] font-black uppercase tracking-widest text-vp-navy">{t('agent.onsite.steps.details')}</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Date du RDV</label>
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">{t('common.date')}</label>
                 <input 
                   type="date"
-                  {...register('appointmentDate', { required: 'Date requise' })}
+                  {...register('appointmentDate', { required: t('common.required') })}
                   className="w-full h-[50px] px-4 rounded-xl border border-slate-200 outline-none focus:border-vp-cyan focus:ring-4 focus:ring-vp-cyan/5 bg-white font-medium text-sm transition-all shadow-sm"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Heure du RDV</label>
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">{t('common.time')}</label>
                 <input 
                   type="time"
-                  {...register('appointmentTime', { required: 'Heure requise' })}
+                  {...register('appointmentTime', { required: t('common.required') })}
                   className="w-full h-[50px] px-4 rounded-xl border border-slate-200 outline-none focus:border-vp-cyan focus:ring-4 focus:ring-vp-cyan/5 bg-white font-medium text-sm transition-all shadow-sm"
                 />
               </div>
@@ -134,20 +136,20 @@ export default function OnsiteAppointment() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Département</label>
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">{t('common.department')}</label>
                 <select 
-                  {...register('department', { required: 'Requis' })}
+                  {...register('department', { required: t('common.required') })}
                   className="w-full h-[50px] px-4 rounded-xl border border-slate-200 outline-none focus:border-vp-cyan focus:ring-4 focus:ring-vp-cyan/5 bg-white font-medium text-sm transition-all"
                 >
-                  <option value="">Sélectionner...</option>
+                  <option value="">{t('common.actions.select')}...</option>
                   {departements.map(d => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
               <Input 
-                label="Hôte (Personne à voir)" 
+                label={t('agent.onsite.labels.host')}
                 name="contactPerson" 
                 register={register}
-                options={{ required: 'Hôte requis' }}
+                options={{ required: t('common.required') }}
                 error={errors.contactPerson?.message}
                 placeholder="Nom complet"
                 className="rounded-xl"
@@ -155,9 +157,9 @@ export default function OnsiteAppointment() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Motif du rendez-vous</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">{t('agent.onsite.labels.motif')}</label>
               <textarea
-                {...register('motif', { required: 'Requis' })}
+                {...register('motif', { required: t('common.required') })}
                 rows="2"
                 className="w-full p-5 rounded-xl border border-slate-200 outline-none focus:border-vp-cyan focus:ring-4 focus:ring-vp-cyan/5 bg-white font-bold text-sm transition-all placeholder:text-slate-300 shadow-inner"
                 placeholder="Ex: Entretien d'embauche, Livraison..."
@@ -171,14 +173,14 @@ export default function OnsiteAppointment() {
               onClick={() => navigate('/agent/dashboard')}
               className="px-6 py-2.5 text-[10px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors"
             >
-              Annuler
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
               disabled={mutation.isPending}
               className="btn-primary py-2.5 px-8 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
             >
-              {mutation.isPending ? '⏳ Traitement...' : 'Confirmer RDV'}
+              {mutation.isPending ? '⏳ ...' : t('agent.onsite.submit')}
             </button>
           </div>
         </div>
@@ -192,11 +194,11 @@ export default function OnsiteAppointment() {
                 ✓
               </div>
               <div>
-                <h2 className="text-2xl font-black text-vp-navy">RDV Enregistré</h2>
-                <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest mt-2">Dossier créé avec succès</p>
+                <h2 className="text-2xl font-black text-vp-navy">{t('agent.onsite.success.title')}</h2>
+                <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest mt-2">{t('agent.onsite.success.message')}</p>
               </div>
               <p className="text-xs font-medium text-slate-500 italic pb-4">
-                Redirection automatique vers le tableau de bord...
+                Redirection...
               </p>
               <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
                 <div className="h-full bg-vp-cyan animate-progress origin-left"></div>

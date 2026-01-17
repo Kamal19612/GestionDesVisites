@@ -9,10 +9,15 @@
     "edit": "Modifier",
     "actions": "Actions",
     "date": "Date",
+    "time": "Heure",
     "status": "Statut",
     "reason": "Motif",
     "yes": "Oui",
-    "no": "Non"
+    "no": "Non",
+    "department": "Département",
+    "identity": "Identité",
+    "contact": "Contact",
+    "back": "Retour"
   },
   "status": {
     "EN_ATTENTE": "En attente",
@@ -59,6 +64,156 @@
       "details": "Détails",
       "approve_success": "Rendez-vous approuvé",
       "reject_success": "Rendez-vous rejeté"
+    }
+  },
+  "agent": {
+    "dashboard": {
+      "title": "Contrôle d'Accès",
+      "subtitle": "Supervision des entrées, sorties et sécurité du site en temps réel.",
+      "actions": {
+        "entry": "Nouvelle Entrée",
+        "history": "Journal de Bord",
+        "create_onsite": "Enregistrer un visiteur non planifié"
+      },
+      "stats": {
+        "appointments": { "label": "Rendez-vous", "sub": "Prévus ce jour" },
+        "pending": { "label": "À Venir", "sub": "Attente d'arrivée" },
+        "onsite": { "label": "Sur Site", "sub": "Visiteurs présents" },
+        "completed": { "label": "Sorties", "sub": "Visites terminées" }
+      }
+    },
+    "appointments": {
+        "title": "VISITEURS ATTENDUS",
+        "subtitle": "Liste des personnes autorisées à entrer",
+        "view_all": "Voir le planning complet",
+        "sync": "Mise à jour...",
+        "empty": "Aucun visiteur attendu pour le moment."
+    },
+    "visits": {
+        "title": "Visiteurs Présents sur Site",
+        "full_list": "Liste complète des présences",
+        "empty": "Aucun visiteur actuellement sur le site.",
+        "checkout": "Enregistrer la Sortie"
+    },
+    "validation": {
+      "title": "Validation des Rendez-vous",
+      "subtitle": "Approuvez ou rejetez les demandes de visite en attente.",
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "cancel": "Annuler",
+      "confirm_reject": "Confirmer le Rejet",
+      "reject_reason": "Motif du rejet",
+      "reject_placeholder": "Veuillez indiquer la raison du refus...",
+      "access_denied": {
+          "title": "Accès Refusé",
+          "message": "Vous n'avez pas les permissions nécessaires pour accéder à cette page de validation.",
+          "back": "Retour au Dashboard"
+      },
+      "empty": "Aucune demande en attente de validation."
+    },
+    "onsite": {
+      "title": "Nouveau RDV sur site",
+      "subtitle": "Prise de rendez-vous immédiate au poste.",
+      "steps": {
+        "identity": "Identité Visiteur",
+        "details": "Détails du Rendez-vous"
+      },
+      "labels": {
+        "firstname": "Prénom",
+        "lastname": "Nom",
+        "phone": "Téléphone",
+        "host": "Hôte (Personne à voir)",
+        "motif": "Motif du rendez-vous"
+      },
+      "success": {
+        "title": "RDV Enregistré",
+        "message": "Dossier créé avec succès"
+      },
+      "submit": "Confirmer RDV"
+    },
+    "entry": {
+      "title": "Saisie d'Entrée Directe",
+      "subtitle": "Enregistrement rapide au poste de garde",
+      "search": {
+        "placeholder": "Email, Téléphone...",
+        "code_placeholder": "Code RDV (8 caractères)",
+        "button": "Chercher",
+        "by_code": "Vérifier Code"
+      },
+      "sections": {
+        "identity": "Identité du Visiteur",
+        "doc": "Document & Contact",
+        "destination": "Destination",
+        "time": "Horodatage"
+      },
+      "labels": {
+        "doc_id": "Pièce d'Identité",
+        "target_dept": "Département Ciblé",
+        "host_internal": "Hôte interne (Employé)",
+        "now": "MAINTENANT"
+      },
+      "submit": "ENREGISTRER L'ENTRÉE DU VISITEUR",
+      "register": {
+        "title": "Registre Opérationnel du Jour",
+        "subtitle": "Mouvements en temps réel",
+        "movements": "Mouvements",
+        "empty": "Aucun mouvement aujourd'hui",
+        "checkout_btn": "Valider la Sortie"
+      },
+      "memos": {
+        "security_title": "Memo Sécurité",
+        "security_text": "Toute personne doit présenter une pièce d'identité valide. Le scan du badge est obligatoire pour tout personnel externe.",
+        "protocol_title": "Protocole Sécurité",
+        "protocol_text": "Tout checkout manuel clôture définitivement la session de visite. Pour toute modification ultérieure, veuillez contacter l'administrateur système."
+      }
+    },
+    "history": {
+      "title": "Registre & Attentes",
+      "subtitle": "Synchronisation des flux passés et des visites à venir.",
+      "tabs": {
+        "archives": "Archives",
+        "upcoming": "À Venir"
+      },
+      "table": {
+        "time": "Temporel",
+        "visitor": "Visiteur",
+        "goal": "Objectif & Lieu",
+        "state": "État"
+      },
+      "status": {
+        "confirmed_identity": "Identité confirmée",
+        "validated": "Validée",
+        "closed": "Clôturée",
+        "active": "Active"
+      }
+
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "ADMINISTRATION GÉNÉRALE",
+      "subtitle": "Pilotage centralisé de la sécurité, des accès et des performances.",
+      "action": "OUVRIR LE MODULE",
+      "cards": {
+        "stats": {
+          "title": "Analyses & Rapports",
+          "desc": "Tableaux de bord détaillés sur les flux de visiteurs, taux d'occupation et métriques de sécurité."
+        },
+        "users": {
+          "title": "Gestion du Personnel",
+          "desc": "Administration complète des comptes (Agents, Secrétaires, Employés) et gestion des privilèges d'accès."
+        },
+        "settings": {
+          "title": "Configuration Système",
+          "desc": "Paramétrage global de l'application, préférences de notification et politiques de maintenance."
+        }
+      },
+      "summary": {
+        "title": "Moniteur d'Activité Système",
+        "description": "Vue synthétique de l'état opérationnel de la plateforme et des indicateurs de performance en temps réel.",
+        "uptime": "VISITEURS SUR SITE",
+        "visits_today": "ACTIVITÉ GLOBALE JOURNALIÈRE"
+      }
     }
   }
 }

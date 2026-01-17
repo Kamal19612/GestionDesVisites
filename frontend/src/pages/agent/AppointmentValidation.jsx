@@ -47,7 +47,7 @@ export default function AppointmentValidation() {
     },
   });
 
-  if (user && user.role && !['SECRETAIRE', 'ADMIN', 'AGENT_SECURITE'].includes(user.role)) {
+  if (user && user.role && !['SECRETAIRE', 'ADMIN', 'AGENT'].includes(user.role)) {
     return (
       <div className="max-w-2xl mx-auto mt-20 p-8 border-2 border-dashed border-red-200 rounded-3xl text-center bg-red-50/30">
         <p className="text-4xl mb-4">🚫</p>

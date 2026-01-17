@@ -37,7 +37,8 @@ export default function MainLayout({ children }) {
       <div className="flex flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4">
         {/* Sidebar (Premium Design) */}
         <aside className="hidden md:flex flex-col w-64 mr-6">
-          <div className="sticky top-6 space-y-6">
+          <div className="sticky top-6 h-[calc(100vh-8rem)] flex flex-col justify-between">
+            <div className="space-y-6">
             {/* User Profile Card */}
             <div className="card p-5 border-none shadow-xl shadow-slate-200/50 bg-white/80 backdrop-blur-xl relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-24 h-24 bg-vp-cyan/5 blur-2xl -mr-12 -mt-12 group-hover:bg-vp-cyan/10 transition-colors"></div>
@@ -101,22 +102,56 @@ export default function MainLayout({ children }) {
                  )}
                  
                  {user && user.role === 'SECRETAIRE' && (
-                   <li>
-                     <Link 
-                       to="/secretary/appointments" 
-                       className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
-                         useLocation().pathname.includes('/secretary/appointments') 
-                         ? 'font-bold text-vp-navy bg-slate-50' 
-                         : 'hover:bg-white hover:shadow-lg text-slate-500'
-                       }`}
-                     >
-                       <span className="text-xl">🗓️</span>
-                       <div className="flex flex-col">
-                         <span className="text-sm">Agenda</span>
-                         <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Modération</span>
-                       </div>
-                     </Link>
-                   </li>
+                   <>
+                     <li>
+                       <Link 
+                         to="/secretary/appointments" 
+                         className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                           useLocation().pathname.includes('/secretary/appointments') 
+                           ? 'font-bold text-vp-navy bg-slate-50' 
+                           : 'hover:bg-white hover:shadow-lg text-slate-500'
+                         }`}
+                       >
+                         <span className="text-xl">🗓️</span>
+                         <div className="flex flex-col">
+                           <span className="text-sm">Agenda</span>
+                           <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Modération</span>
+                         </div>
+                       </Link>
+                     </li>
+                     <li>
+                       <Link 
+                         to="/secretary/visits/today" 
+                         className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                           useLocation().pathname.includes('/secretary/visits/today') 
+                           ? 'font-bold text-vp-navy bg-slate-50' 
+                           : 'hover:bg-white hover:shadow-lg text-slate-500'
+                         }`}
+                       >
+                         <span className="text-xl">📋</span>
+                         <div className="flex flex-col">
+                           <span className="text-sm">Visites du Jour</span>
+                           <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Suivi Accès</span>
+                         </div>
+                       </Link>
+                     </li>
+                     <li>
+                       <Link 
+                         to="/secretary/settings" 
+                         className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                           useLocation().pathname.includes('/secretary/settings') 
+                           ? 'font-bold text-vp-navy bg-slate-50' 
+                           : 'hover:bg-white hover:shadow-lg text-slate-500'
+                         }`}
+                       >
+                         <span className="text-xl">⚙️</span>
+                         <div className="flex flex-col">
+                           <span className="text-sm">Paramètres</span>
+                           <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Compte</span>
+                         </div>
+                       </Link>
+                     </li>
+                   </>
                  )}
 
                  {user && user.role === 'AGENT' && (
@@ -180,17 +215,33 @@ export default function MainLayout({ children }) {
                    <>
                    <li>
                      <Link 
-                       to="/admin/dashboard" 
+                       to="/admin/users" 
                        className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
-                         useLocation().pathname === '/admin/dashboard'
+                         useLocation().pathname.includes('/admin/users') 
                          ? 'font-bold text-vp-navy bg-slate-50' 
                          : 'hover:bg-white hover:shadow-lg text-slate-500'
                        }`}
                      >
-                       <span className={`text-xl ${useLocation().pathname === '/admin/dashboard' ? 'scale-110' : 'group-hover:scale-110'}`}>📊</span>
+                       <span className="text-xl">👥</span>
                        <div className="flex flex-col">
-                         <span className="text-sm">Dashboard</span>
-                         <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Vue globale</span>
+                         <span className="text-sm">Utilisateurs</span>
+                         <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Comptes</span>
+                       </div>
+                     </Link>
+                   </li>
+                   <li>
+                     <Link 
+                       to="/admin/statistics" 
+                       className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${
+                         useLocation().pathname.includes('/admin/statistics') 
+                         ? 'font-bold text-vp-navy bg-slate-50' 
+                         : 'hover:bg-white hover:shadow-lg text-slate-500'
+                       }`}
+                     >
+                       <span className="text-xl">📈</span>
+                       <div className="flex flex-col">
+                         <span className="text-sm">Statistiques</span>
+                         <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400">Rapports</span>
                        </div>
                      </Link>
                    </li>
@@ -214,6 +265,7 @@ export default function MainLayout({ children }) {
                  )}
                </ul>
             </nav>
+            </div>
 
             {/* Logout Action */}
             {user && (

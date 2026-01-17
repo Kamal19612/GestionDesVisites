@@ -94,7 +94,9 @@ export default function History() {
                     <td className="px-6 py-6">
                       <div className="space-y-1">
                         <p className="text-sm font-black text-vp-navy">{row.date}</p>
-                        <p className="text-[10px] font-bold text-slate-400 italic">{row.HEntree} → {row.HSortie || '...'}</p>
+                        <p className="text-[10px] font-bold text-slate-400 italic">
+                            {row.heureArrivee} → {row.heureSortie || '...'}
+                        </p>
                       </div>
                     </td>
                     <td className="px-6 py-6">
@@ -103,33 +105,29 @@ export default function History() {
                            {row.motif}
                          </p>
                          <p className="text-[10px] font-black uppercase tracking-tighter text-vp-cyan">
-                           {row.motif?.includes('[') ? row.motif.split(']')[0].replace('[', '') : 'Division N/A'}
+                           {row.departement || 'Non spécifié'}
                          </p>
                        </div>
                     </td>
                     <td className="px-6 py-6">
                        <div className="flex items-center gap-3">
                          <div className="w-8 h-8 rounded-lg bg-vp-navy/5 flex items-center justify-center text-[10px] font-black text-vp-navy shrink-0">
-                           {row.visiteur?.charAt(0) || 'V'}
+                           {(row.visitorName || 'V').charAt(0)}
                          </div>
-                         <p className="text-sm font-bold text-vp-navy">{row.visiteur || 'Non spécifié'}</p>
+                         <p className="text-sm font-bold text-vp-navy">{row.visitorName || 'Non spécifié'}</p>
                        </div>
                     </td>
                     <td className="px-6 py-6">
                        <div className="space-y-2">
                           <div className="flex items-center gap-2">
                              <span className="text-[10px] opacity-40">🛡️</span>
-                             <p className="text-[10px] font-bold text-slate-500">{row.agentSecurite || 'Système'}</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                             <span className="text-[10px] opacity-40">📝</span>
-                             <p className="text-[10px] font-bold text-slate-500">{row.secretaire || 'Auto'}</p>
+                             <p className="text-[10px] font-bold text-slate-500">{row.agentNom || 'Système'}</p>
                           </div>
                        </div>
                     </td>
                     <td className="px-6 py-6 text-center">
-                       <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${getStatusStyle(row.Statut)}`}>
-                         {row.Statut || 'Inconnu'}
+                       <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${getStatusStyle(row.statut)}`}>
+                         {row.statut || 'Inconnu'}
                        </span>
                     </td>
                   </tr>

@@ -1,10 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 import PageHeader from '../../components/ui/PageHeader';
+import statisticsService from '../../services/statisticsService';
 
 export default function AdminDashboard() {
   const { t } = useTranslation();
+
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ['admin-stats'],
+    queryFn: () => statisticsService.getOverview(),
+    refetchInterval: 30000
+  });
 
   const cards = [
     {
@@ -36,6 +44,8 @@ export default function AdminDashboard() {
     }
   ];
 
+  const recentActivities = stats?.recentActivity || [];
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <PageHeader
@@ -66,7 +76,7 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      {/* Quick Summary / Recent Activity Placeholder */}
+      {/* Quick Summary / Recent Activity */}
       <div className="mt-16 bg-vp-navy rounded-[2.5rem] p-12 text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-vp-cyan/10 blur-[120px] -mr-48 -mt-48 rounded-full"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-vp-mint/10 blur-[100px] -ml-32 -mb-32 rounded-full"></div>
@@ -79,33 +89,44 @@ export default function AdminDashboard() {
             </p>
             <div className="flex gap-12">
               <div>
-                <p className="text-4xl font-bold mb-1 text-vp-cyan">99.9%</p>
+                <p className="text-4xl font-bold mb-1 text-vp-cyan">
+                    {isLoading ? "..." : stats?.activeVisits || 0}
+                </p>
                 <p className="text-white/40 text-xs font-bold uppercase tracking-widest">{t('admin.dashboard.summary.uptime')}</p>
               </div>
               <div>
-                <p className="text-4xl font-bold mb-1 text-vp-mint">124</p>
+                <p className="text-4xl font-bold mb-1 text-vp-mint">
+                    {isLoading ? "..." : stats?.totalVisitsToday || 0}
+                </p>
                 <p className="text-white/40 text-xs font-bold uppercase tracking-widest">{t('admin.dashboard.summary.visits_today')}</p>
               </div>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6">
-             <div className="space-y-4">
-                {[
-                  { user: "Agent Dupont", action: "Nouveau visiteur enregistré", time: "10m" },
-                  { user: "Secrétaire Lea", action: "Rendez-vous validé", time: "25m" },
-                  { user: "Admin", action: "Mise à jour système", time: "1h" }
-                ].map((act, i) => (
-                  <div key={i} className="flex justify-between items-center p-3 hover:bg-white/5 rounded-xl transition-colors">
-                    <div className="flex gap-3 items-center">
-                      <div className="w-8 h-8 rounded-full bg-vp-cyan/20 flex items-center justify-center text-xs">👤</div>
-                      <div>
-                        <p className="text-sm font-bold">{act.user}</p>
-                        <p className="text-xs text-white/40">{act.action}</p>
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 min-h-[300px] flex flex-col">
+             <div className="space-y-4 flex-1">
+                {isLoading ? (
+                    <div className="text-center py-10 text-white/20 italic">Chargement...</div>
+                ) : recentActivities.length === 0 ? (
+                    <div className="text-center py-10 text-white/20 italic">Aucune activité récente.</div>
+                ) : (
+                    recentActivities.map((act, i) => (
+                      <div key={i} className="flex justify-between items-center p-3 hover:bg-white/5 rounded-xl transition-colors">
+                        <div className="flex gap-3 items-center">
+                          <div className="w-8 h-8 rounded-full bg-vp-cyan/20 flex items-center justify-center text-xs">👤</div>
+                          <div>
+                            <p className="text-sm font-bold">{act.visitorName}</p>
+                            <p className="text-xs text-white/40">Entrée : {act.heureArrivee}</p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-bold text-white/30">{act.statut}</span>
                       </div>
-                    </div>
-                    <span className="text-[10px] font-bold text-white/30">{act.time}</span>
-                  </div>
-                ))}
+                    ))
+                )}
+             </div>
+             <div className="mt-4 pt-4 border-t border-white/5 text-center">
+                 <Link to="/admin/statistics" className="text-xs font-bold text-vp-cyan uppercase tracking-widest hover:text-white transition-colors">
+                    Voir les rapports complets
+                 </Link>
              </div>
           </div>
         </div>

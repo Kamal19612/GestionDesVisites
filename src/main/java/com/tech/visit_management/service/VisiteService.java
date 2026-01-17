@@ -93,7 +93,7 @@ public class VisiteService {
 
     public java.util.List<Visites> getVisitesActives() {
         return visitesRepository.findAll().stream()
-                .filter(v -> v.getStatut() == StatutVisite.EN_COURS || v.getHeureSortie() == null)
+                .filter(v -> v.getStatut() == StatutVisite.EN_COURS)
                 .toList();
     }
 
@@ -103,5 +103,9 @@ public class VisiteService {
 
     public java.util.List<Visites> getAllVisitesHistorique() {
         return visitesRepository.findAll();
+    }
+
+    public java.util.List<Visites> getVisitesByDate(LocalDate date) {
+        return visitesRepository.findByDate(date);
     }
 }

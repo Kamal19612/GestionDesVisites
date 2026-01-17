@@ -15,7 +15,7 @@ const visitService = {
 
   // Get visits for today (Appointment lists for agent dashboard)
   getVisitsToday: async () => {
-    const response = await api.get('/agent/rendezvous/aujourdhui')
+    const response = await api.get('/agent/visites/aujourdhui')
     return response.data
   },
 
@@ -53,6 +53,11 @@ const visitService = {
 
   searchVisitor: async (query) => {
     const response = await api.get(`/visiteur/search?q=${query}`);
+    return response.data;
+  },
+
+  searchByCode: async (code) => {
+    const response = await api.get(`/agent/rendezvous/search-by-code?code=${code}`);
     return response.data;
   }
 }

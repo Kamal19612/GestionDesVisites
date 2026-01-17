@@ -5,8 +5,8 @@ import statisticsService from '../../../services/statisticsService';
 
 export default function AverageDuration() {
   const { data, isLoading, isError } = useQuery({ 
-    queryKey: ['statistics','overview'], 
-    queryFn: () => statisticsService.getOverview(),
+    queryKey: ['statistics','average-duration'], 
+    queryFn: () => statisticsService.getAverageDuration(),
     staleTime: 0,
     refetchInterval: 30000,
   });
@@ -26,21 +26,10 @@ export default function AverageDuration() {
     </div>
   );
 
-  let avg = 0;
-  let min = 0;
-  let max = 0;
-  let hasData = false;
-
-  if (Array.isArray(data) && data.length > 0) {
-    const nums = data.map(d => d.dureeMoyenneMinutes).filter(x => x != null);
-    if (nums.length > 0) {
-      const sum = nums.reduce((a,b)=>a+b,0);
-      avg = Math.round(sum/nums.length);
-      min = Math.min(...nums);
-      max = Math.max(...nums);
-      hasData = true;
-    }
-  }
+  const avg = data?.averageMinutes || 0;
+  const min = data?.minMinutes || 0;
+  const max = data?.maxMinutes || 0;
+  const count = data?.totalVisitsConsidered || 0;
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -79,7 +68,7 @@ export default function AverageDuration() {
 
           <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-vp-mint">
              <span className="w-2 h-2 rounded-full bg-vp-mint animate-pulse"></span>
-             Calculé sur {data.length} services
+             Calculé sur {count} visites clôturées
           </div>
         </div>
 

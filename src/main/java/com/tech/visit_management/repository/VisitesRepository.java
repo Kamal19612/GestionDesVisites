@@ -13,4 +13,6 @@ public interface VisitesRepository extends JpaRepository<Visites, Long> {
     List<Visites> findByStatut(StatutVisite statut);
 
     List<Visites> findByDate(LocalDate date);
+
+    List<Visites> findTop5ByOrderByDateDescHeureArriveeDesc();
 }
