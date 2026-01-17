@@ -94,9 +94,42 @@ export default function History() {
                     <td className="px-6 py-6">
                       <div className="space-y-1">
                         <p className="text-sm font-black text-vp-navy">{row.date}</p>
-                        <p className="text-[10px] font-bold text-slate-400 italic">
-                            {row.heureArrivee} → {row.heureSortie || '...'}
-                        </p>
+                        <div className="flex flex-col gap-1 mt-1 text-[10px] font-medium text-slate-500">
+                           <div className="flex items-center gap-2">
+                              <span className="w-12 font-bold uppercase tracking-wider text-vp-cyan">Entrée</span>
+                              <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">
+                                {Array.isArray(row.heureArrivee) 
+                                    ? `${String(row.heureArrivee[0]).padStart(2,'0')}:${String(row.heureArrivee[1]).padStart(2,'0')}` 
+                                    : (row.heureArrivee || '--:--')}
+                              </span>
+                           </div>
+                           <div className="flex items-center gap-2">
+                              <span className="w-12 font-bold uppercase tracking-wider text-slate-400">Sortie</span>
+                              <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">
+                                {Array.isArray(row.heureSortie) 
+                                    ? `${String(row.heureSortie[0]).padStart(2,'0')}:${String(row.heureSortie[1]).padStart(2,'0')}` 
+                                    : (row.heureSortie || '--:--')}
+                              </span>
+                           </div>
+                           {/* Calculated Duration */}
+                           {(row.heureArrivee && row.heureSortie) && (
+                               <div className="flex items-center gap-2 mt-1 pt-1 border-t border-slate-100">
+                                  <span className="w-12 font-bold uppercase tracking-wider text-vp-mint">Durée</span>
+                                  <span className="font-black">
+                                    {(() => {
+                                        const toMin = (t) => {
+                                            if(!t) return 0;
+                                            if(Array.isArray(t)) return t[0]*60 + t[1];
+                                            const [h, m] = t.split(':').map(Number);
+                                            return h*60 + m;
+                                        };
+                                        const diff = toMin(row.heureSortie) - toMin(row.heureArrivee);
+                                        return diff > 0 ? `${Math.floor(diff/60)}h ${diff%60}m` : '0m';
+                                    })()}
+                                  </span>
+                               </div>
+                           )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-6">

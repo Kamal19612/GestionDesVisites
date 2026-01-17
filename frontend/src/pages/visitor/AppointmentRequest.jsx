@@ -41,6 +41,7 @@ export default function AppointmentRequest() {
       personneARencontrer: data.personneARencontrer,
       departement: data.departement,
       whatsapp: data.whatsapp,
+      pieceIdentite: data.pieceIdentite,
     };
     mutation.mutate(cleanedData);
   };
@@ -92,13 +93,22 @@ export default function AppointmentRequest() {
                  </div>
                </div>
                
-               <Input 
-                  label="WhatsApp / Téléphone (pour recevoir le code)" 
-                  name="whatsapp" 
-                  register={register} 
-                  placeholder="+212 ..."
-                  className="rounded-2xl h-[55px] bg-slate-50/50 border-slate-200"
-               />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                   <Input 
+                      label="WhatsApp / Téléphone (pour recevoir le code)" 
+                      name="whatsapp" 
+                      register={register} 
+                      placeholder="+212 ..."
+                      className="rounded-2xl h-[55px] bg-slate-50/50 border-slate-200"
+                   />
+                   <Input 
+                      label="Numéro Pièce d'Identité (CNI / Passeport)" 
+                      name="pieceIdentite" 
+                      register={register} 
+                      placeholder="Ex: AB123456"
+                      className="rounded-2xl h-[55px] bg-slate-50/50 border-slate-200"
+                   />
+                </div>
             </div>
 
             {/* Sec 2: Destination */}

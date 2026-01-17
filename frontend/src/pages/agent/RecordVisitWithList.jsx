@@ -22,7 +22,7 @@ export default function RecordVisitWithList() {
       visitorLastName: '',
       visitorEmail: '',
       visitorPhone: '',
-      identityDoc: '',
+      pieceIdentite: '',
     }
   });
   
@@ -40,7 +40,7 @@ export default function RecordVisitWithList() {
 
   const { data: rawAppointments = [] } = useQuery({
     queryKey: ['appointments', 'today'],
-    queryFn: () => appointmentService.getTodayAppointments(),
+    queryFn: () => appointmentService.getAgentTodayAppointments(),
     staleTime: 0,
     refetchInterval: 5000,
   });
@@ -63,6 +63,7 @@ export default function RecordVisitWithList() {
     onSuccess: () => {
       toast.success(t('agent.onsite.success.message'));
       reset();
+      setFoundRdvId(null);
       const now = new Date();
       setValue('visitDate', now.toISOString().split('T')[0]);
       setValue('visitTime', now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', hour12: false }));
@@ -127,20 +128,49 @@ export default function RecordVisitWithList() {
       if(searchCode.length > 3) searchCodeMutation.mutate(searchCode);
   }
 
+  const [foundRdvId, setFoundRdvId] = useState(null);
+
+  const startVisitMutation = useMutation({
+    mutationFn: (id) => visitService.startVisit(id),
+    onSuccess: () => {
+        toast.success(t('agent.onsite.success.message'));
+        reset();
+        setFoundRdvId(null);
+        queryClient.invalidateQueries({ queryKey: ['visits'] });
+        queryClient.invalidateQueries({ queryKey: ['appointments'] });
+        setTimeout(() => refetchVisits(), 500);
+    },
+    onError: (err) => {
+        toast.error(t('common.error'));
+        console.error(err);
+    }
+  });
+
   const onSubmit = (data) => {
-    const visitPayload = {
-      date: data.visitDate,
-      heureArrivee: data.visitTime,
-      heureSortie: null,
-      motif: `[${data.departementVisit}] ${data.personneARencontrer} - ${data.motifVisit} (Doc: ${data.identityDoc})`,
-      visitorName: `${data.visitorFirstName} ${data.visitorLastName}`,
-      visitorEmail: data.visitorEmail,
-      visitorPhone: data.visitorPhone
-    };
-    recordVisitMutation.mutate(visitPayload);
+    if (foundRdvId) {
+        // If we found an existing appointment, start it directly
+        startVisitMutation.mutate(foundRdvId);
+    } else {
+        // Walk-in / New Visit
+        const visitPayload = {
+          date: data.visitDate,
+          heureArrivee: data.visitTime, // Backend maps this to 'heure' for RendezVous creation? No, backend needs 'heure'
+          heure: data.visitTime, // Add this for RDV creation
+          heureSortie: null,
+          motif: `[${data.departementVisit}] ${data.motifVisit}`,
+          visitorName: `${data.visitorFirstName} ${data.visitorLastName}`,
+          email: data.visitorEmail,
+          whatsapp: data.visitorPhone,
+          pieceIdentite: data.pieceIdentite,
+          departement: data.departementVisit,
+          personneARencontrer: data.personneARencontrer
+        };
+        recordVisitMutation.mutate(visitPayload);
+    }
   };
 
   const fillFromAppointment = (apt) => {
+    setFoundRdvId(apt.id); // Store ID for submission
     const names = apt.visitorName?.split(' ') || [];
     setValue('visitorFirstName', names[0] || '');
     setValue('visitorLastName', names.slice(1).join(' ') || '');
@@ -253,7 +283,7 @@ export default function RecordVisitWithList() {
                           <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">{t('agent.entry.sections.doc')}</h3>
                        </div>
                        <Input 
-                         label={t('agent.entry.labels.doc_id')} name="identityDoc" register={register} options={{ required: t('common.required') }} error={errors.identityDoc?.message}
+                         label={t('agent.entry.labels.doc_id')} name="pieceIdentite" register={register} options={{ required: t('common.required') }} error={errors.pieceIdentite?.message}
                          placeholder="CNI / PASSPORT / N°" className="bg-slate-50 border-transparent hover:bg-white focus:bg-white transition-colors"
                        />
                        <Input 
@@ -272,27 +302,18 @@ export default function RecordVisitWithList() {
                             <span className="w-8 h-8 rounded-lg bg-vp-mint text-white flex items-center justify-center text-xs font-black shadow-lg shadow-vp-mint/20">03</span>
                             <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">{t('agent.entry.sections.destination')}</h3>
                          </div>
-                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">{t('agent.entry.labels.target_dept')}</label>
-                            <select 
-                              {...register('departementVisit', { required: t('common.required') })}
-                              className="w-full h-12 px-5 bg-slate-50 border-transparent hover:bg-white focus:bg-white rounded-2xl focus:ring-4 focus:ring-vp-cyan/10 focus:border-vp-cyan transition-all font-bold text-vp-navy outline-none appearance-none cursor-pointer"
-                            >
-                              <option value="">{t('common.actions.select')}...</option>
-                              {departements.map(d => <option key={d} value={d}>{d}</option>)}
-                            </select>
-                         </div>
-                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">{t('agent.entry.labels.host_internal')}</label>
-                            <select 
-                              {...register('personneARencontrer', { required: t('common.required') })}
-                              className="w-full h-12 px-5 bg-slate-50 border-transparent hover:bg-white focus:bg-white rounded-2xl focus:ring-4 focus:ring-vp-cyan/10 focus:border-vp-cyan transition-all font-bold text-vp-navy outline-none appearance-none cursor-pointer"
-                            >
-                              <option value="">{t('common.actions.select')}...</option>
-                              {employees.map(e => <option key={e.id} value={e.name}>{e.name}</option>)}
-                              <option value="Autre">Autre / Non listé</option>
-                            </select>
-                         </div>
+                          <div className="space-y-2">
+                             <Input 
+                                label={t('agent.entry.labels.target_dept')} name="departementVisit" register={register} options={{ required: t('common.required') }} error={errors.departementVisit?.message}
+                                placeholder="Département..." className="bg-slate-50 border-transparent hover:bg-white focus:bg-white transition-colors" 
+                             />
+                          </div>
+                          <div className="space-y-2">
+                             <Input 
+                                label={t('agent.entry.labels.host_internal')} name="personneARencontrer" register={register} options={{ required: t('common.required') }} error={errors.personneARencontrer?.message}
+                                placeholder="Nom de l'hôte..." className="bg-slate-50 border-transparent hover:bg-white focus:bg-white transition-colors" 
+                             />
+                          </div>
                       </div>
 
                       <div className="space-y-6">

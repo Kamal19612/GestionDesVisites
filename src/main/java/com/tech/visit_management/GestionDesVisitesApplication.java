@@ -12,6 +12,7 @@ import com.tech.visit_management.enums.Role;
 import com.tech.visit_management.repository.UsersRepository;
 
 @SpringBootApplication
+@org.springframework.scheduling.annotation.EnableScheduling
 public class GestionDesVisitesApplication {
 
     public static void main(String[] args) {

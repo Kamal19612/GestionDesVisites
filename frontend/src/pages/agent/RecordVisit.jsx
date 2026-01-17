@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, Link } from 'react-router-dom';
@@ -7,7 +7,7 @@ import visitService from '../../services/visitService';
 import toast from 'react-hot-toast';
 
 export default function RecordVisit() {
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue, watch } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm({
     defaultValues: {
       visitDate: new Date().toISOString().split('T')[0],
       visitTime: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', hour12: false }),
@@ -15,6 +15,9 @@ export default function RecordVisit() {
       motifVisit: '',
       visitorFirstName: '',
       visitorLastName: '',
+      whatsapp: '',
+      pieceIdentite: '',
+      personneARencontrer: ''
     }
   });
   
@@ -24,7 +27,7 @@ export default function RecordVisit() {
   const recordVisitMutation = useMutation({
     mutationFn: (data) => visitService.createVisit(data),
     onSuccess: () => {
-      toast.success('Visite enregistrée avec succès');
+      toast.success('Entrée enregistrée avec succès');
       reset();
       queryClient.invalidateQueries({ queryKey: ['visits'] });
       setTimeout(() => navigate('/agent/dashboard'), 1500);
@@ -36,15 +39,22 @@ export default function RecordVisit() {
 
   const onSubmit = (data) => {
     const visitPayload = {
+      // Mapping fields to backend expected format for Direct Visit (RendezVousDto)
       date: data.visitDate,
-      HEntree: data.visitTime,
-      HSortie: data.departureTime || null,
-      motif: `[${data.departementVisit}] ${data.visitorFirstName} ${data.visitorLastName} | ${data.motifVisit}`
+      heure: data.visitTime,
+      visitorName: `${data.visitorFirstName} ${data.visitorLastName}`,
+      email: '', // Optional for direct walk-in
+      whatsapp: data.whatsapp,
+      pieceIdentite: data.pieceIdentite,
+      personneARencontrer: data.personneARencontrer,
+      departement: data.departementVisit,
+      motif: data.motifVisit,
+      // Backend handles 'type: DIRECT' and 'statut: VALIDE' automatically for this endpoint
     };
     recordVisitMutation.mutate(visitPayload);
   };
 
-  const departements = ['IT', 'RH', 'Finance', 'Ventes', 'Support', 'Marketing', 'Logistique', 'Direction'];
+  const departements = ['IT', 'RH', 'Finance', 'Ventes', 'Support', 'Marketing', 'Logistique', 'Direction', 'Sécurité'];
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -57,122 +67,148 @@ export default function RecordVisit() {
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-vp-navy">Enregistrement Visiteur</h1>
-          <p className="text-slate-500 font-medium tracking-wide italic">Saisie des informations d'arrivée sur site.</p>
+          <p className="text-slate-500 font-medium tracking-wide italic">Saisie des informations pour une entrée immédiate.</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        {/* Section: Identité */}
         <div className="card p-0 overflow-hidden border-none shadow-2xl shadow-slate-200/40">
-          <div className="p-8 md:p-10 space-y-8">
-            <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-              <span className="w-8 h-8 rounded-lg bg-vp-cyan/10 text-vp-cyan flex items-center justify-center text-sm font-bold shadow-inner">01</span>
-              <h2 className="text-sm font-bold uppercase tracking-widest text-vp-navy">Identité du Visiteur</h2>
-            </div>
+          <div className="p-8 md:p-12 space-y-10">
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input 
-                label="Prénom" 
-                name="visitorFirstName" 
-                register={register}
-                options={{ required: 'Requis' }}
-                error={errors.visitorFirstName?.message}
-                placeholder="Ex: Thomas"
-                className="rounded-xl border-slate-200 focus:border-vp-cyan"
-              />
-              <Input 
-                label="Nom" 
-                name="visitorLastName" 
-                register={register}
-                options={{ required: 'Requis' }}
-                error={errors.visitorLastName?.message}
-                placeholder="Ex: Anderson"
-                className="rounded-xl border-slate-200 focus:border-vp-cyan"
-              />
+            {/* Sec 1: Planning / Horodatage (Adapted from Visitor Form style) */}
+            <div className="space-y-6">
+               <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                 <div className="w-8 h-8 rounded-lg bg-vp-cyan/10 text-vp-cyan flex items-center justify-center text-xs font-black">01</div>
+                 <h2 className="text-sm font-black uppercase tracking-[0.2em] text-vp-navy">Arrivée & Identité</h2>
+               </div>
+               
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <Input 
+                    label="Date" 
+                    name="visitDate" 
+                    type="date"
+                    register={register}
+                    className="rounded-2xl h-[55px] bg-slate-50/50 border-slate-200"
+                    options={{ required: 'Required' }}
+                 />
+                 <Input 
+                    label="Heure d'arrivée" 
+                    name="visitTime" 
+                    type="time"
+                    register={register}
+                    className="rounded-2xl h-[55px] bg-slate-50/50 border-slate-200"
+                    options={{ required: 'Required' }}
+                 />
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <Input 
+                    label="Prénom" 
+                    name="visitorFirstName" 
+                    register={register}
+                    className="rounded-2xl h-[55px] bg-slate-50/50 border-slate-200"
+                    placeholder="Prénom du visiteur"
+                    options={{ required: 'Prénom requis' }}
+                    error={errors.visitorFirstName?.message}
+                 />
+                 <Input 
+                    label="Nom" 
+                    name="visitorLastName" 
+                    register={register}
+                    className="rounded-2xl h-[55px] bg-slate-50/50 border-slate-200"
+                    placeholder="Nom du visiteur"
+                    options={{ required: 'Nom requis' }}
+                    error={errors.visitorLastName?.message}
+                 />
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                   <Input 
+                      label="Téléphone / WhatsApp" 
+                      name="whatsapp" 
+                      register={register} 
+                      placeholder="+212 ..."
+                      className="rounded-2xl h-[55px] bg-slate-50/50 border-slate-200"
+                   />
+                   <Input 
+                      label="Numéro Pièce d'Identité (CNI / Passeport)" 
+                      name="pieceIdentite" 
+                      register={register} 
+                      placeholder="Ex: AB123456"
+                      className="rounded-2xl h-[55px] bg-slate-50/50 border-slate-200"
+                      options={{ required: 'Pièce d\'identité requise' }} // Mandatory for security agent
+                      error={errors.pieceIdentite?.message}
+                   />
+                </div>
+            </div>
+
+            {/* Sec 2: Destination */}
+            <div className="space-y-6">
+               <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                 <div className="w-8 h-8 rounded-lg bg-vp-mint/10 text-vp-mint flex items-center justify-center text-xs font-black">02</div>
+                 <h2 className="text-sm font-black uppercase tracking-[0.2em] text-vp-navy">Destination</h2>
+               </div>
+               
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Département / Service</label>
+                    <select 
+                      {...register('departementVisit', { required: 'Département requis' })}
+                      className="w-full h-[55px] px-6 rounded-2xl border border-slate-200 focus:border-vp-cyan focus:ring-4 focus:ring-vp-cyan/5 outline-none transition-all font-bold text-sm bg-slate-50/50"
+                    >
+                      <option value="">Sélectionner...</option>
+                      {departements.map(d => <option key={d} value={d}>{d}</option>)}
+                    </select>
+                    {errors.departementVisit && <p className="text-[10px] text-red-500 font-bold mt-1 px-1">{errors.departementVisit.message}</p>}
+                 </div>
+                 <Input
+                    label="Hôte (Personne à voir)"
+                    name="personneARencontrer"
+                    placeholder="Ex: Marc Dupont"
+                    register={register}
+                    options={{ required: 'Hôte requis' }}
+                    error={errors.personneARencontrer?.message}
+                    className="rounded-2xl h-[55px] bg-slate-50/50 border-slate-200"
+                  />
+               </div>
+               
+               <div className="space-y-1">
+                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Motif de la visite</label>
+                 <textarea
+                   {...register('motifVisit', { required: 'Motif requis' })}
+                   rows="3"
+                   placeholder="Raison de la visite..."
+                   className="w-full p-6 rounded-3xl border border-slate-200 focus:border-vp-cyan focus:ring-4 focus:ring-vp-cyan/5 outline-none transition-all font-medium text-sm bg-slate-50/50 placeholder:italic"
+                 />
+                 {errors.motifVisit && <p className="text-[10px] text-red-500 font-bold mt-1 px-1">{errors.motifVisit.message}</p>}
+               </div>
             </div>
           </div>
 
-          {/* Section: Logistique */}
-          <div className="px-8 md:px-10 py-10 bg-slate-50/50 border-t border-slate-100 space-y-8">
-            <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-              <span className="w-8 h-8 rounded-lg bg-vp-mint/10 text-vp-mint flex items-center justify-center text-sm font-bold shadow-inner">02</span>
-              <h2 className="text-sm font-bold uppercase tracking-widest text-vp-navy">Horodatage & Destination</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Input 
-                label="Date" 
-                name="visitDate" 
-                type="date"
-                register={register}
-                className="rounded-xl border-slate-200"
-              />
-              <Input 
-                label="Arrivée" 
-                name="visitTime" 
-                type="time"
-                register={register}
-                className="rounded-xl border-slate-200"
-              />
-              <div className="space-y-3">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Département</label>
-                <select 
-                  {...register('departementVisit', { required: 'Requis' })}
-                  className="w-full h-[50px] px-4 rounded-xl border border-slate-200 outline-none focus:border-vp-cyan focus:ring-4 focus:ring-vp-cyan/5 bg-white font-medium text-sm transition-all"
-                >
-                  <option value="">Sélectionner...</option>
-                  {departements.map(d => <option key={d} value={d}>{d}</option>)}
-                </select>
-                {errors.departementVisit && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.departementVisit.message}</p>}
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Motif de la visite</label>
-              <textarea
-                {...register('motifVisit', { required: 'Requis' })}
-                rows="3"
-                placeholder="Décrivez brièvement l'objet du passage..."
-                className="w-full p-6 rounded-2xl border border-slate-200 outline-none focus:border-vp-cyan focus:ring-4 focus:ring-vp-cyan/5 bg-white font-medium text-sm transition-all placeholder:text-slate-300"
-              ></textarea>
-              {errors.motifVisit && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.motifVisit.message}</p>}
-            </div>
-          </div>
-
-          {/* Footer Actions */}
-          <div className="p-8 bg-white border-t border-slate-100 flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => navigate('/agent/dashboard')}
-              className="px-8 py-3 text-xs font-bold text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors"
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              disabled={recordVisitMutation.isPending}
-              className="btn-primary px-10 flex items-center gap-2"
-            >
-              {recordVisitMutation.isPending ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                  Envoi...
-                </>
-              ) : 'Valider Entrée'}
-            </button>
+          <div className="bg-slate-50 p-8 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-slate-100">
+             <div className="flex items-center gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">
+                <span className="w-2 h-2 rounded-full bg-vp-mint animate-pulse"></span>
+                Validation Immédiate
+             </div>
+             <div className="flex gap-4 w-full md:w-auto">
+                 <button
+                   type="button"
+                   onClick={() => navigate('/agent/dashboard')}
+                   className="px-8 py-3 text-xs font-bold text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors"
+                 >
+                   Annuler
+                 </button>
+                 <button 
+                    type="submit" 
+                    disabled={recordVisitMutation.isPending}
+                    className="btn-primary px-12 h-[55px] flex items-center justify-center gap-3 w-full md:w-auto"
+                 >
+                   {recordVisitMutation.isPending ? '⏳ Enregistrement...' : '⚡ Valider Entrée'}
+                 </button>
+             </div>
           </div>
         </div>
       </form>
-
-      <div className="mt-10 p-6 bg-vp-navy rounded-3xl text-white relative overflow-hidden flex items-center">
-         <div className="absolute top-0 right-0 w-40 h-40 bg-vp-cyan/10 blur-3xl -mr-20 -mt-20 rounded-full"></div>
-         <div className="flex gap-4 relative z-10">
-           <span className="text-2xl">📋</span>
-           <div className="text-xs text-white/60 leading-relaxed font-medium">
-             <strong>Note :</strong> L'heure de sortie pourra être complétée plus tard dans l'onglet "Visites en cours" ou manuellement via l'édition de visite.
-           </div>
-         </div>
-      </div>
     </div>
   );
 }

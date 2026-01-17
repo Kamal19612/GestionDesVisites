@@ -4,32 +4,59 @@ import { Link } from 'react-router-dom';
 import statisticsService from '../../../services/statisticsService';
 
 export default function AverageDuration() {
-  const { data, isLoading, isError } = useQuery({ 
-    queryKey: ['statistics','average-duration'], 
-    queryFn: () => statisticsService.getAverageDuration(),
+  // Fetch full history to calculate stats dynamically client-side
+  const { data: history = [], isLoading, isError } = useQuery({ 
+    queryKey: ['statistics','history'], 
+    queryFn: () => statisticsService.getHistory(),
     staleTime: 0,
     refetchInterval: 30000,
   });
 
-  if (isLoading) return (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="animate-spin w-12 h-12 border-4 border-vp-cyan border-t-transparent rounded-full"></div>
-    </div>
-  );
+  // Calculation Logic
+  const calculateStats = (visits) => {
+    if (!visits || visits.length === 0) return { avg: 0, min: 0, max: 0, count: 0 };
 
-  if (isError) return (
-    <div className="max-w-2xl mx-auto mt-20 p-8 border-2 border-dashed border-red-200 rounded-3xl text-center bg-red-50/30">
-      <p className="text-4xl mb-4">⚠️</p>
-      <h2 className="text-xl font-bold text-red-800 mb-2">Erreur de données</h2>
-      <p className="text-sm text-red-600/70 font-medium mb-6">Impossible de calculer les durées de visite.</p>
-      <Link to="/admin/statistics" className="btn-secondary px-8">Retour au module</Link>
-    </div>
-  );
+    const durations = [];
 
-  const avg = data?.averageMinutes || 0;
-  const min = data?.minMinutes || 0;
-  const max = data?.maxMinutes || 0;
-  const count = data?.totalVisitsConsidered || 0;
+    visits.forEach(v => {
+        // Only consider completed visits with valid times
+        if (v.heureArrivee && v.heureSortie && v.heureSortie !== '-') {
+            
+            // Helper to parsing "HH:mm:ss" or [H, m, s]
+            const toMinutes = (timeVal) => {
+                if (!timeVal) return null;
+                let h = 0, m = 0;
+                if (Array.isArray(timeVal)) {
+                    h = timeVal[0]; 
+                    m = timeVal[1];
+                } else if (typeof timeVal === 'string') {
+                    const parts = timeVal.split(':');
+                    h = parseInt(parts[0], 10);
+                    m = parseInt(parts[1], 10);
+                }
+                return h * 60 + m;
+            };
+
+            const start = toMinutes(v.heureArrivee);
+            const end = toMinutes(v.heureSortie);
+
+            if (start !== null && end !== null && end >= start) {
+                durations.push(end - start);
+            }
+        }
+    });
+
+    if (durations.length === 0) return { avg: 0, min: 0, max: 0, count: 0 };
+
+    const total = durations.reduce((a, b) => a + b, 0);
+    const minVal = Math.min(...durations);
+    const maxVal = Math.max(...durations);
+    const avgVal = Math.round(total / durations.length);
+
+    return { avg: avgVal, min: minVal, max: maxVal, count: durations.length };
+  };
+
+  const { avg, min, max, count } = calculateStats(history);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

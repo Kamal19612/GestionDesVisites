@@ -22,6 +22,7 @@ public class RendezVousDto {
     private String visitorName; // Renamed from visiteurNom
     private String email;
     private String whatsapp;
+    private String pieceIdentite;
     private LocalDate date;
     private LocalTime heure;
     private String motif;

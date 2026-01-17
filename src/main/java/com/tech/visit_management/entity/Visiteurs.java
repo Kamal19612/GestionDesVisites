@@ -60,6 +60,11 @@ public class Visiteurs {
     private String plaqueImmatriculation;
 
     /**
+     * Numéro de la pièce d'identité du visiteur (CNI, Passeport, etc.)
+     */
+    private String numeroPieceIdentite;
+
+    /**
      * Lien ou référence vers le document scanné du visiteur.
      */
     private String scanDocument;

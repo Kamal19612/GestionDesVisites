@@ -65,6 +65,11 @@ public class RendezVousService {
                     return visiteursRepository.save(newVisiteur);
                 });
 
+        if (rdvDto.getPieceIdentite() != null && !rdvDto.getPieceIdentite().isEmpty()) {
+            visiteur.setNumeroPieceIdentite(rdvDto.getPieceIdentite());
+            visiteur = visiteursRepository.save(visiteur);
+        }
+
         RendezVous rdv = rendezVousMapper.toEntity(rdvDto, visiteur);
         rdv.setType(TypeRendezVous.PLANIFIE);
         rdv.setStatut(StatutRendezVous.EN_ATTENTE);
@@ -142,28 +147,103 @@ public class RendezVousService {
             throw new AccessDeniedException("Seul un agent peut créer un rendez-vous direct.");
         }
 
-        // On suppose que le visiteur existe déjà ou est créé à la volée (flux complexe, simplifié ici)
-        // Ici on prend l'ID du visiteur du DTO
-        Visiteurs visiteur = visiteursRepository.findById(rdvDto.getVisiteurId())
-                .orElseThrow(() -> new RuntimeException("Visiteur introuvable"));
+        Visiteurs visiteur;
+
+        // Case 1: Visiteur ID is provided (Known visitor)
+        if (rdvDto.getVisiteurId() != null) {
+            visiteur = visiteursRepository.findById(rdvDto.getVisiteurId())
+                    .orElseThrow(() -> new RuntimeException("Visiteur introuvable"));
+        } // Case 2: No ID, but Email provided (Check existence or Create)
+        else if (rdvDto.getEmail() != null && !rdvDto.getEmail().isEmpty()) {
+            final String email = rdvDto.getEmail();
+            Users user = usersRepository.findByEmail(email).orElseGet(() -> {
+                // Create new User
+                // Split Name
+                String fullName = rdvDto.getVisitorName() != null ? rdvDto.getVisitorName() : "Visiteur";
+                String[] parts = fullName.split(" ", 2);
+                String prenom = parts[0];
+                String nom = parts.length > 1 ? parts[1] : "-";
+
+                Users newUser = Users.builder()
+                        .nom(nom)
+                        .prenom(prenom)
+                        .email(email)
+                        .telephone(rdvDto.getWhatsapp())
+                        .motDePasse(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode("123456")) // Default password
+                        .role(Role.VISITEUR)
+                        .build();
+                return usersRepository.save(newUser);
+            });
+
+            // Ensure Visiteur profile exists
+            Users finalUser = user;
+            visiteur = visiteursRepository.findAll().stream()
+                    .filter(v -> v.getUser().getId().equals(finalUser.getId()))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        Visiteurs newV = Visiteurs.builder().user(finalUser).build();
+                        return visiteursRepository.save(newV);
+                    });
+        } // Case 3: Anonymous or No Email (Create generic/placeholder User if possible, OR fail)
+        // For strict compliance, we require at least a name to create a dummy user? 
+        // Let's create a dummy user based on timestamp to avoid collision if email is empty
+        else {
+            String dummyEmail = "visitor_" + System.currentTimeMillis() + "@walkin.com";
+
+            String fullName = rdvDto.getVisitorName() != null ? rdvDto.getVisitorName() : "Inconnu";
+            String[] parts = fullName.split(" ", 2);
+            String prenom = parts[0];
+            String nom = parts.length > 1 ? parts[1] : "-";
+
+            Users newUser = Users.builder()
+                    .nom(nom)
+                    .prenom(prenom)
+                    .email(dummyEmail)
+                    .telephone(rdvDto.getWhatsapp())
+                    .motDePasse(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode("123456"))
+                    .role(Role.VISITEUR)
+                    .build();
+            newUser = usersRepository.save(newUser);
+            visiteur = Visiteurs.builder().user(newUser).build();
+            visiteur = visiteursRepository.save(visiteur);
+
+        }
+
+        if (rdvDto.getPieceIdentite() != null && !rdvDto.getPieceIdentite().isEmpty()) {
+            visiteur.setNumeroPieceIdentite(rdvDto.getPieceIdentite());
+            visiteur = visiteursRepository.save(visiteur);
+        }
 
         RendezVous rdv = rendezVousMapper.toEntity(rdvDto, visiteur);
         rdv.setType(TypeRendezVous.DIRECT);
         rdv.setStatut(StatutRendezVous.VALIDE);
-        rdv.setCode(UUID.randomUUID().toString()); // Code généré
+        rdv.setCode(UUID.randomUUID().toString().substring(0, 8)); // Code
+        // Ensure critical fields are set if DTO missed them
+        if (rdv.getDate() == null) {
+            rdv.setDate(LocalDate.now());
+        }
+        if (rdv.getHeure() == null) {
+            rdv.setHeure(java.time.LocalTime.now());
+        }
 
         rdv = rendezVousRepository.save(rdv);
 
         // Création immédiate de la visite (EN_COURS)
         Visites visite = visiteService.createVisiteForRendezVous(rdv, agent);
 
-        // Notification
-        notificationService.envoyerNotification(
-                visiteur.getUser(),
-                "Bienvenue. Votre visite commence.",
-                TypeNotification.SMS, // Exemple
-                visite
-        );
+        // Notification (Opt)
+        if (visiteur.getUser().getEmail() != null && !visiteur.getUser().getEmail().contains("@walkin.com")) {
+            try {
+                notificationService.envoyerNotification(
+                        visiteur.getUser(),
+                        "Bienvenue. Votre visite commence.",
+                        TypeNotification.EMAIL,
+                        visite
+                );
+            } catch (Exception e) {
+                // Ignore notification errors for walk-ins
+            }
+        }
 
         return rendezVousMapper.toDto(rdv);
     }
@@ -340,5 +420,26 @@ public class RendezVousService {
         RendezVous rdv = rendezVousRepository.findByCode(code)
                 .orElseThrow(() -> new RuntimeException("Code invalide ou expiré : " + code));
         return rendezVousMapper.toDto(rdv);
+    }
+
+    /**
+     * Tâche planifiée : Archive les rendez-vous validés mais non honorés (date
+     * passée). S'exécute tous les jours à minuit.
+     */
+    @org.springframework.scheduling.annotation.Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void archiveExpiredAppointments() {
+        List<RendezVous> expired = rendezVousRepository.findAll().stream()
+                .filter(r -> r.getStatut() == StatutRendezVous.VALIDE && r.getDate().isBefore(LocalDate.now()))
+                .toList();
+
+        expired.forEach(r -> {
+            r.setStatut(StatutRendezVous.ARCHIVE);
+            rendezVousRepository.save(r);
+        });
+
+        if (!expired.isEmpty()) {
+            System.out.println("Auto-Archiving: " + expired.size() + " expired appointments processed.");
+        }
     }
 }
