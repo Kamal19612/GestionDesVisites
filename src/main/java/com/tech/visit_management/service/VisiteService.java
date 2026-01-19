@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tech.visit_management.entity.RendezVous;
 import com.tech.visit_management.entity.Users;
 import com.tech.visit_management.entity.Visites;
+import com.tech.visit_management.enums.StatutRendezVous;
 import com.tech.visit_management.enums.StatutVisite;
 import com.tech.visit_management.enums.TypeNotification;
 import com.tech.visit_management.repository.VisitesRepository;
@@ -82,12 +83,13 @@ public class VisiteService {
         visite.setStatut(StatutVisite.TERMINE);
         visite = visitesRepository.save(visite);
 
-        notificationService.envoyerNotification(
-                visite.getRendezVous().getVisiteur().getUser(),
-                "Votre visite est terminée.",
-                TypeNotification.EMAIL,
-                visite
-        );
+        // Archive the associated RendezVous
+        RendezVous rdv = visite.getRendezVous();
+        if (rdv != null) {
+            rdv.setStatut(StatutRendezVous.ARCHIVE);
+            rendezVousRepository.save(rdv);
+        }
+
         return visite;
     }
 

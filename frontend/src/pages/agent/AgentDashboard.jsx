@@ -34,7 +34,7 @@ export default function AgentDashboard() {
   // derived stats
   const validAppointmentsCount = todayAppointments.filter(a => a.statut === 'VALIDE').length;
   const startedVisitsCount = visitsToday.filter(v => v.heureArrivee).length;
-  const pendingAppointments = Math.max(0, validAppointmentsCount - startedVisitsCount);
+  const pendingAppointments = validAppointmentsCount;
   const ongoingVisits = visitsToday.filter(v => v.heureArrivee && !v.heureSortie).length;
   const completedVisits = visitsToday.filter(v => v.heureSortie).length;
 

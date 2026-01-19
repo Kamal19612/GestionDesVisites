@@ -25,6 +25,9 @@ public class VisiteDto {
     private Long agentId;
     private String agentNom; // Pour affichage
     private String visitorName;
+    private String visitorPhone;
+    private String visitorEmail;
+    private String hostName; // Personne à rencontrer
     private String motif;
     private String departement;
 }

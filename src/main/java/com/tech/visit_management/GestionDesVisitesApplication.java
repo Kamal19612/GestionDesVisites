@@ -118,4 +118,19 @@ public class GestionDesVisitesApplication {
             }
         };
     }
+
+    @Bean
+    public CommandLineRunner fixDatabaseConstraints(@Autowired org.springframework.jdbc.core.JdbcTemplate jdbcTemplate) {
+        return args -> {
+            try {
+                // Drop the old constraint
+                jdbcTemplate.execute("ALTER TABLE rendez_vous DROP CONSTRAINT IF EXISTS rendez_vous_statut_check");
+                // Add the new constraint with ARCHIVE support
+                jdbcTemplate.execute("ALTER TABLE rendez_vous ADD CONSTRAINT rendez_vous_statut_check CHECK (statut IN ('EN_ATTENTE', 'VALIDE', 'REFUSE', 'ARCHIVE'))");
+                System.out.println("DEBUG: Database constraint rendez_vous_statut_check updated successfully to include ARCHIVE.");
+            } catch (org.springframework.dao.DataAccessException e) {
+                System.err.println("DEBUG: Failed to update DB constraint: " + e.getMessage());
+            }
+        };
+    }
 }

@@ -53,6 +53,9 @@ const statisticsService = {
                 motif: apt.motif,
                 departement: apt.departement || apt.department,
                 visitorName: apt.visitorName,
+                visitorPhone: apt.whatsapp, // Map whatsapp to visitorPhone
+                visitorEmail: apt.email,
+                hostName: apt.personneARencontrer,
                 agentNom: 'N/A',
                 statut: apt.statut // EN_ATTENTE, REFUSE, VALIDE...
             };

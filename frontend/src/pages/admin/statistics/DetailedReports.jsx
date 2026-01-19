@@ -18,9 +18,20 @@ export default function DetailedReports() {
         toast.error('Aucune donnée à exporter');
         return;
       }
-      const headers = ['ID', 'Date', 'Heure Entrée', 'Heure Sortie', 'Motif', 'Statut'];
-      const rows = displayData.map(r => [r.id, r.date, r.HEntree, r.HSortie || '', r.motif, r.Statut]);
-      const csv = [headers, ...rows].map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const headers = ['ID', 'Date', 'Heure Entrée', 'Heure Sortie', 'Visiteur', 'Contact', 'Hôte', 'Département', 'Motif', 'Statut'];
+      const rows = displayData.map(r => [
+          r.id, 
+          r.date, 
+          r.HEntree || r.heureArrivee, 
+          r.HSortie || r.heureSortie || '', 
+          r.visitorName,
+          r.visitorPhone || r.visitorEmail,
+          r.hostName || r.personneARencontrer,
+          r.departement || r.department,
+          r.motif, 
+          r.Statut || r.statut
+      ]);
+      const csv = [headers, ...rows].map(r => r.map(cell => `"${String(cell || '').replace(/"/g, '""')}"`).join(',')).join('\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
@@ -36,8 +47,8 @@ export default function DetailedReports() {
   const getStatusStyle = (s) => {
     if (!s) return 'bg-slate-100 text-slate-500 border-slate-200';
     const v = s.toString().toUpperCase();
-    if (v.includes('TERM')) return 'bg-vp-mint/10 text-vp-mint border-vp-mint/20';
-    if (v.includes('EN')) return 'bg-amber-100 text-amber-600 border-amber-200';
+    if (v.includes('TERM') || v.includes('ARCH')) return 'bg-vp-mint/10 text-vp-mint border-vp-mint/20';
+    if (v.includes('EN') || v.includes('COUR')) return 'bg-amber-100 text-amber-600 border-amber-200';
     return 'bg-rose-100 text-rose-600 border-rose-200';
   };
 
@@ -96,14 +107,16 @@ export default function DetailedReports() {
               <tr className="bg-slate-50/50">
                 <th className="px-6 py-5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">ID Ref</th>
                 <th className="px-6 py-5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">Horodatage</th>
-                <th className="px-6 py-5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">Motif du Passage</th>
+                <th className="px-6 py-5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">Visiteur</th>
+                <th className="px-6 py-5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">Destination</th>
+                <th className="px-6 py-5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">Motif</th>
                 <th className="px-6 py-5 text-center text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">Statut</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {displayData.length === 0 ? (
                 <tr>
-                   <td colSpan="4" className="py-24 text-center">
+                   <td colSpan="6" className="py-24 text-center">
                       <p className="text-sm font-bold text-slate-300 italic">Aucun log à afficher pour cette période.</p>
                    </td>
                 </tr>
@@ -116,15 +129,29 @@ export default function DetailedReports() {
                     <td className="px-6 py-6">
                       <div className="space-y-1">
                         <p className="text-sm font-black text-vp-navy">{row.date}</p>
-                        <p className="text-[10px] font-bold text-slate-400 italic">{row.HEntree} - {row.HSortie || 'OUVERT'}</p>
+                        <p className="text-[10px] font-bold text-slate-400 italic">
+                             {row.HEntree || row.heureArrivee || '--:--'} - {row.HSortie || row.heureSortie || '...'}
+                        </p>
                       </div>
                     </td>
-                    <td className="px-6 py-6 font-medium text-slate-600 text-sm max-w-[300px] truncate" title={row.motif}>
+                    <td className="px-6 py-6">
+                        <div className="space-y-1">
+                            <p className="text-sm font-black text-slate-700">{row.visitorName || 'Anonyme'}</p>
+                            <p className="text-[10px] font-medium text-slate-400 truncate max-w-[150px]">{row.visitorPhone || row.visitorEmail || 'Non spécifié'}</p>
+                        </div>
+                    </td>
+                    <td className="px-6 py-6">
+                         <div className="space-y-1">
+                            <p className="text-xs font-bold text-vp-navy">{row.hostName || row.personneARencontrer || 'N/A'}</p>
+                            <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 bg-slate-100 text-slate-500 rounded">{row.departement || row.department || 'GEN'}</span>
+                        </div>
+                    </td>
+                    <td className="px-6 py-6 font-medium text-slate-600 text-sm max-w-[200px] truncate" title={row.motif}>
                       {row.motif}
                     </td>
                     <td className="px-6 py-6 text-center">
-                       <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${getStatusStyle(row.Statut)}`}>
-                         {row.Statut || 'N/A'}
+                       <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${getStatusStyle(row.Statut || row.statut)}`}>
+                         {row.Statut || row.statut || 'N/A'}
                        </span>
                     </td>
                   </tr>

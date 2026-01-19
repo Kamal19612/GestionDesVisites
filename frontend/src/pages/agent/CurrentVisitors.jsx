@@ -7,13 +7,14 @@ export default function CurrentVisitors() {
   const queryClient = useQueryClient()
 
   const { data: rawVisitors = [], isLoading, isError, error } = useQuery({
-    queryKey: ['visits', 'active'],
-    queryFn: () => visitService.getActiveVisits(),
+    queryKey: ['visits', 'today'],
+    queryFn: () => visitService.getVisitsToday(),
     staleTime: 0,
-    refetchInterval: 15000, // Faster sync for active visitors
+    refetchInterval: 5000, 
   })
 
-  const visitors = Array.isArray(rawVisitors) ? rawVisitors : (rawVisitors?.content || []);
+  const allVisits = Array.isArray(rawVisitors) ? rawVisitors : (rawVisitors?.content || []);
+  const visitors = allVisits.filter(v => v.heureArrivee && !v.heureSortie);
 
   // state for immediate UI updates
   const [localVisitors, setLocalVisitors] = React.useState(visitors)
@@ -33,7 +34,11 @@ export default function CurrentVisitors() {
       queryClient.invalidateQueries({ queryKey: ['visits'] })
       toast.success(`Check-out enregistré`)
     },
-    onError: () => toast.error('Erreur lors du check-out'),
+    onError: (err) => {
+        console.error("Checkout Error:", err);
+        const backendMsg = err.response?.data?.error || err.response?.data?.message;
+        toast.error(`Erreur: ${backendMsg || err.message}`);
+    },
   })
 
   const calculateDuration = (checkInTime) => {
@@ -103,7 +108,7 @@ export default function CurrentVisitors() {
                   </span>
                 </div>
                 <h2 className="text-lg font-bold truncate relative z-10">{visitor.visitorName || 'Visiteur'}</h2>
-                <p className="text-[10px] opacity-60 font-black uppercase tracking-widest relative z-10">Depuis {calculateDuration(visitor.time || visitor.HEntree)}</p>
+                <p className="text-[10px] opacity-60 font-black uppercase tracking-widest relative z-10">Arrivé(e) à {visitor.heureArrivee || visitor.time}</p>
               </div>
 
               {/* Info Body */}
@@ -111,11 +116,19 @@ export default function CurrentVisitors() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">Destination</p>
-                    <p className="text-xs font-black text-vp-navy truncate">🏛️ {visitor.department || visitor.departement || 'Non spécifié'}</p>
+                    <p className="text-xs font-black text-vp-navy truncate">🏛️ {visitor.departement || visitor.department || 'Non spécifié'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">Hôte</p>
+                    <p className="text-xs font-black text-vp-navy truncate">👤 {visitor.hostName || visitor.personneARencontrer || 'N/A'}</p>
                   </div>
                   <div>
                     <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">Contact</p>
-                    <p className="text-xs font-black text-vp-navy truncate">👤 {visitor.contact || visitor.visitorPhone || 'N/A'}</p>
+                    <p className="text-xs font-black text-vp-navy truncate">📱 {visitor.visitorPhone || visitor.contact || 'N/A'}</p>
+                  </div>
+                   <div>
+                    <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">Email</p>
+                    <p className="text-xs font-black text-vp-navy truncate" title={visitor.visitorEmail}>📧 {visitor.visitorEmail || 'N/A'}</p>
                   </div>
                 </div>
 
@@ -125,7 +138,6 @@ export default function CurrentVisitors() {
                 </div>
 
                 <div className="flex justify-between items-center text-[9px] font-black text-slate-300 uppercase tracking-widest">
-                  <span>Entrée : {visitor.time || visitor.HEntree || '--:--'}</span>
                   <span>ID : #{visitor.id}</span>
                 </div>
               </div>
@@ -134,10 +146,9 @@ export default function CurrentVisitors() {
               <div className="p-5 pt-0">
                 <button
                   onClick={() => checkOutMutation.mutate(visitor.id)}
-                  disabled={checkOutMutation.isPending}
                   className="w-full py-3.5 bg-vp-cyan hover:bg-vp-cyan/90 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-vp-cyan/20 transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
-                  🚀 Enregistrer Départ
+                  SIGNALER SORTIE
                 </button>
               </div>
             </div>

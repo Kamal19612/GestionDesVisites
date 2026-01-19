@@ -411,7 +411,8 @@ public class RendezVousService {
     public List<RendezVousDto> getTousLesRendezVousAujourdhui() {
         return rendezVousRepository.findAll().stream()
                 .filter(r -> r.getStatut() == StatutRendezVous.VALIDE
-                && r.getDate().equals(LocalDate.now()))
+                && r.getDate().equals(LocalDate.now())
+                && (r.getVisite() == null || r.getVisite().getStatut() == com.tech.visit_management.enums.StatutVisite.PLANIFIE))
                 .map(rendezVousMapper::toDto)
                 .toList();
     }
@@ -430,7 +431,8 @@ public class RendezVousService {
     @Transactional
     public void archiveExpiredAppointments() {
         List<RendezVous> expired = rendezVousRepository.findAll().stream()
-                .filter(r -> r.getStatut() == StatutRendezVous.VALIDE && r.getDate().isBefore(LocalDate.now()))
+                .filter(r -> (r.getStatut() == StatutRendezVous.VALIDE || r.getStatut() == StatutRendezVous.REFUSE)
+                && r.getDate().isBefore(LocalDate.now()))
                 .toList();
 
         expired.forEach(r -> {

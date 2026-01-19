@@ -107,27 +107,6 @@ export default function RecordVisitWithList() {
     }
   });
 
-  const searchCodeMutation = useMutation({
-    mutationFn: (code) => visitService.searchByCode(code),
-    onSuccess: (rdv) => {
-        toast.success("Rendez-vous validé trouvé !");
-        fillFromAppointment(rdv); // Reuse logic
-    },
-    onError: () => {
-        toast.error("Code invalide ou expiré.");
-    }
-  });
-
-  const handleSearch = (e) => {
-      e.preventDefault();
-      if(searchTerm.length > 2) searchVisitorMutation.mutate(searchTerm);
-  }
-
-  const handleCodeSearch = (e) => {
-      e.preventDefault();
-      if(searchCode.length > 3) searchCodeMutation.mutate(searchCode);
-  }
-
   const [foundRdvId, setFoundRdvId] = useState(null);
 
   const startVisitMutation = useMutation({
@@ -145,6 +124,30 @@ export default function RecordVisitWithList() {
         console.error(err);
     }
   });
+
+  const searchCodeMutation = useMutation({
+    mutationFn: (code) => visitService.searchByCode(code),
+    onSuccess: (rdv) => {
+        toast.success("Rendez-vous validé trouvé !");
+        fillFromAppointment(rdv); // Reuse logic
+        
+        // Auto-start the visit as per user request ("passer automatiquement")
+        startVisitMutation.mutate(rdv.id);
+    },
+    onError: () => {
+        toast.error("Code invalide ou expiré.");
+    }
+  });
+
+  const handleSearch = (e) => {
+      e.preventDefault();
+      if(searchTerm.length > 2) searchVisitorMutation.mutate(searchTerm);
+  }
+
+  const handleCodeSearch = (e) => {
+      e.preventDefault();
+      if(searchCode.length > 3) searchCodeMutation.mutate(searchCode);
+  }
 
   const onSubmit = (data) => {
     if (foundRdvId) {

@@ -14,7 +14,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, String>> handleDataIntegrityViolationException(org.springframework.dao.DataIntegrityViolationException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", "Email déjà utilisé ou contrainte violée."));
+        Throwable rootCause = ex.getMostSpecificCause();
+        String msg = rootCause != null ? rootCause.getMessage() : ex.getMessage();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", "DB Error: " + msg));
     }
 
     @ExceptionHandler(RuntimeException.class)
